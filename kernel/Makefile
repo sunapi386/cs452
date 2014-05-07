@@ -1,6 +1,5 @@
-# Author j53sun May 5 2014
-# Program that uses the busy wait functions to put output on the terminal 
-# attached to the TS-7200. 
+# Author j53sun
+# Makefile for the kernel
 #
 XCC     = gcc
 AS	= as
@@ -18,17 +17,17 @@ ASFLAGS	= -mcpu=arm920t -mapcs-32
 
 ARFLAGS = rcs
 
-all:  j53sunmain.a 
-# for lack of a better name at the moment, I'll call it j53sunmain.a
+all:  kernel.a
+# for lack of a better name at the moment, I'll call it kernel.a
 
-j53sunmain.s: j53sunmain.c 
-	$(XCC) -S $(CFLAGS) j53sunmain.c
+kernel.s: kernel.c
+	$(XCC) -S $(CFLAGS) kernel.c
 
-j53sunmain.o: j53sunmain.s
-	$(AS) $(ASFLAGS) -o j53sunmain.o j53sunmain.s
+kernel.o: kernel.s
+	$(AS) $(ASFLAGS) -o kernel.o kernel.s
 
-j53sunmain.a: j53sunmain.o
-	$(AR) $(ARFLAGS) $@ j53sunmain.o
+kernel.a: kernel.o
+	$(AR) $(ARFLAGS) $@ kernel.o
 
 
 clean:
