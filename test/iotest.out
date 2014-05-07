@@ -1,0 +1,44 @@
+>> TS-BOOTROM, Rev 1.09 - built 09:54:04, Oct 23 2008
+>> Copyright (C) 2006-2008, Technologic Systems
+>> TS-7200: Rev >E1 CPU, Rev C PLD, 32MB SDRAM
+
++No devices on IDE controller 0
+... waiting for BOOTP information
+Ethernet eth0: MAC address 00:d0:69:42:40:d5
+IP: 10.15.79.205/255.255.255.0, Gateway: 10.15.79.1
+Default server: 129.97.152.12
+
+RedBoot(tm) bootstrap and debug environment [ROMRAM]
+Non-certified release, version current-TS_5 - built 11:24:54, Jun  7 2006
+
+Platform: TS-7200 Board (ARM920T) Rev A
+Copyright (C) 2000, 2001, 2002, 2003, 2004 Red Hat, Inc.
+
+RAM: 0x00000000-0x02000000, [0x00044f88-0x01fdd000] available
+FLASH: 0x60000000 - 0x60800000, 64 blocks of 0x00020000 bytes each.
+RedBoot> load -b 0x00210000 -h 10.15.167.4 "ARM/j53sun/kernel.elf"
+Using default protocol (TFTP)
+Can't load 'ARM/j53sun/kernel.elf': file not found
+RedBoot> load -b 0x00210000 -h 10.15.167.4 "ARM/j53sun/iotest.elf"
+Using default protocol (TFTP)
+Address offset = 0x00210000
+Entry point: 0x00210000, address range: 0x00210000-0x00210fe4
+RedBoot> go
+Hello
+
+***Hello
+
+Hello world.
+
+Well, hello world23.
+
+-23 worlds for 1 person.
+
+ffffffe9 worlds for 723 people.
+
+
+ello
+
+
+Program completed with status 0
+RedBoot> 
