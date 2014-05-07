@@ -1,34 +1,34 @@
-# Author j53sun
-# Makefile for the kernel
+#
+# Makefile for busy-wait IO tests
 #
 XCC     = gcc
-AS	= as
-AR	= ar
+AS		= as
+LD      = ld
 CFLAGS  = -c -fPIC -Wall -I. -I../include -mcpu=arm920t -msoft-float
 # -g: include hooks for gdb
 # -c: only compile
 # -mcpu=arm920t: generate code for the 920t architecture
 # -fpic: emit position-independent code
 # -Wall: report all warnings
-# -msoft-float: use software for floating point
 
 ASFLAGS	= -mcpu=arm920t -mapcs-32
-# -mapcs-32: always create a complete stack frame
+# -mapcs: always generate a complete stack frame
 
-ARFLAGS = rcs
+LDFLAGS = -init main -Map kernel.map -N  -T orex.ld -L/u/wbcowan/gnuarm-4.0.2/lib/gcc/arm-elf/4.0.2 -L../lib
 
-all:  kernel.a
-# for lack of a better name at the moment, I'll call it kernel.a
+all:  kernel.s kernel.elf
 
-kernel.s: kernel.c
+install:
+	cp kernel.elf /u/cs452/tftp/ARM/j53sun
+
+kernel.s: kernel.c kernel.h
 	$(XCC) -S $(CFLAGS) kernel.c
 
 kernel.o: kernel.s
 	$(AS) $(ASFLAGS) -o kernel.o kernel.s
 
-kernel.a: kernel.o
-	$(AR) $(ARFLAGS) $@ kernel.o
-
+kernel.elf: kernel.o
+	$(LD) $(LDFLAGS) -o $@ kernel.o -lbwio -ltimer -lgcc
 
 clean:
-	-rm -f *.s *.a *.o
+	-rm -f kernel.elf *.s *.o kernel.map

@@ -4,10 +4,12 @@
  * Specific to the TS-7200 ARM evaluation board
  *
  */
+#ifndef __TS7200_H
+#define __TS7200_H
 
-#define	TIMER1_BASE	0x80810000
-#define	TIMER2_BASE	0x80810020
-#define	TIMER3_BASE	0x80810080
+#define	TIMER1_BASE	0x80810000 // 16 bit
+#define	TIMER2_BASE	0x80810020 // 16 bit
+#define	TIMER3_BASE	0x80810080 // 32 bit timer
 
 #define	LDR_OFFSET	0x00000000	// 16/32 bits, RW
 #define	VAL_OFFSET	0x00000004	// 16/32 bits, RO
@@ -58,7 +60,7 @@
 	#define RIEN_MASK	0x10	// receive int
 	#define TIEN_MASK	0x20	// transmit int
 	#define RTIEN_MASK	0x40	// receive timeout int
-	#define LBEN_MASK	0x80	// loopback 
+	#define LBEN_MASK	0x80	// loopback
 #define UART_FLAG_OFFSET	0x18	// low 8 bits
 	#define CTS_MASK	0x1
 	#define DCD_MASK	0x2
@@ -82,3 +84,4 @@
 #define UART_HDLCSTS_OFFSET	0x21c
 
 
+#endif // __TS7200_H

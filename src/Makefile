@@ -17,9 +17,11 @@ ASFLAGS	= -mcpu=arm920t -mapcs-32
 
 ARFLAGS = rcs
 
-all:  bwio.a 
+all:  bwio.a timer.a
+	cp bwio.a ../lib/libbwio.a
+	cp timer.a ../lib/libtimer.a
 
-bwio.s: bwio.c 
+bwio.s: bwio.c
 	$(XCC) -S $(CFLAGS) bwio.c
 
 bwio.o: bwio.s
@@ -28,6 +30,14 @@ bwio.o: bwio.s
 bwio.a: bwio.o
 	$(AR) $(ARFLAGS) $@ bwio.o
 
+timer.s: timer.c
+	$(XCC) -S $(CFLAGS) timer.c
+
+timer.o: timer.s
+	$(AS) $(ASFLAGS) -o timer.o timer.s
+
+timer.a: timer.o
+	$(AR) $(ARFLAGS) $@ timer.o
 
 clean:
 	-rm -f *.s *.a *.o
