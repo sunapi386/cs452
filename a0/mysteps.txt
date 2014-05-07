@@ -1,0 +1,42 @@
+A0 Documentation
+================
+Notes for how I did A0.
+
+Steps
+-----
+Refer to first.pdf
+
+1. Copied /u/wbcowan/cs452/io to ~/cs452
+2. Ripped off the src/ folder Makefile to a0/
+3. j53sunmain.c with just 
+   #include <ts7200.h>
+   int main(void) { return 0; }
+4. Set my path
+   PATH="/u/wbcowan/gnuarm-4.0.2/libexec/gcc/arm-elf/4.0.2:/u/wbcowan/gnuarm-4.0.2/arm-elf/bin:" + $PATH
+5. Figure out how to link -
+Actually if I Just go into tests/ I can just `make` the hello world and it'll produce the elf file. I don't think I need to figure out how to link. 
+6. Proceeding to trying to put the .elf file in the tftp directory.
+At the `RedBoot>` prompt, type
+	load -b 0x00218000 -h 129.97.167.1[28] "ARM/<your program name>.elf"
+Seems like the tftp IP address is wrong. Use 10.15.167.4 and remember to chmod a+r your elf file. 
+	load -b 0x00218000 -h 10.15.167.4 "ARM/.elf"
+Note that you can load the ZERO elf file. I need a folder in here; I'm not officially registered in the course and therefore I need to register to probably get a folder.
+   RedBoot> load -b 0x00218000 -h 10.15.167.4 "ARM/ZERO"
+   Using default protocol (TFTP)
+   Address offset = 0x00002000
+   Entry point: 0x00218b00, address range: 0x00218000-0x00218fd9
+   RedBoot> go
+
+
+   This program writes zeroes to as much of RAM as possible.
+   This should be useful to increase consistency of program
+   runs in the face of uninitialized memory problems.
+
+   Will clear 0x00217021 - 0x01fdcfcf (inclusive).
+
+   Press Enter to begin.
+   Press F if you want to write 0xFF instead.
+
+   Going
+
+Note this takes a long time.
