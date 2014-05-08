@@ -17,9 +17,19 @@ ASFLAGS	= -mcpu=arm920t -mapcs-32
 
 ARFLAGS = rcs
 
-all:  termio.a timer.a
+all:  bwio.a termio.a timer.a
+	cp bwio.a ../lib/libbwio.a
 	cp termio.a ../lib/libtermio.a
 	cp timer.a ../lib/libtimer.a
+
+bwio.s: bwio.c
+	$(XCC) -S $(CFLAGS) bwio.c
+
+bwio.o: bwio.s
+	$(AS) $(ASFLAGS) -o bwio.o bwio.s
+
+bwio.a: bwio.o
+	$(AR) $(ARFLAGS) $@ bwio.o
 
 termio.s: termio.c
 	$(XCC) -S $(CFLAGS) termio.c

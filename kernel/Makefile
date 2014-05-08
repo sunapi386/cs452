@@ -30,7 +30,8 @@ kernel.o: kernel.s
 	$(AS) $(ASFLAGS) -o kernel.o kernel.s
 
 kernel.elf: kernel.o
-	$(LD) $(LDFLAGS) -o $@ kernel.o -ltermio -ltimer -lgcc
+	$(LD) $(LDFLAGS) -o $@ kernel.o \
+	-ltermio -ltimer -lgcc # libraries -lbwio
 
 # Libraries
 libs:

@@ -4,7 +4,8 @@
  * termio.h - like bwio.h but with buffering
  */
 
-#define BUFSIZ 100
+
+#define BUFSIZ 255
 
 typedef char *va_list;
 
@@ -24,7 +25,7 @@ typedef char *va_list;
 #define ON	1
 #define	OFF	0
 
-int termcheckandsend( int channel );
+int termcheckandsend();
 
 int termsetfifo( int channel, int state );
 

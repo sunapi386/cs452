@@ -8,8 +8,6 @@
 #include <ts7200.h>
 #include <termio.h>
 
-char bufferCOM1[BUFSIZ], bufferCOM2[BUFSIZ];
-int frontCOM1 = 0, backCOM1 = 0, countCOM1 = 0, frontCOM2 = 0, backCOM2 = 0, countCOM2 = 0;
 
 /*
  * The UARTs are initialized by RedBoot to the following state
@@ -19,32 +17,34 @@ int frontCOM1 = 0, backCOM1 = 0, countCOM1 = 0, frontCOM2 = 0, backCOM2 = 0, cou
  * 	fifos enabled
  */
 
+/* Buffer for sending to COM1 and COM2 */
+char bufferCOM1[BUFSIZ] = {'\0'}, bufferCOM2[BUFSIZ] = {'\0'};
+int frontCOM1 = 0, backCOM1 = 0, countCOM1 = 0, frontCOM2 = 0, backCOM2 = 0, countCOM2 = 0;
+
 /* Checks if there are data to send and ready */
-int termcheckandsend( int channel ) {
+int termcheckandsend() {
+	// if( count != 0 && ( *flags & TXFE_MASK ) && ( *flags & RXFE_MASK) ) {
 	int *flags, *data;
-	switch( channel ) {
-	case COM1:
-		if( countCOM1 == 0 || ( *flags & TXFF_MASK ) ) {
-			return 0;  		/* Can't send right now */
-		}
+	if( countCOM1 != 0 ) {
 		flags = (int *)( UART1_BASE + UART_FLAG_OFFSET );
 		data = (int *)( UART1_BASE + UART_DATA_OFFSET );
-		*data = bufferCOM1[frontCOM1];
-		frontCOM1 = (frontCOM1 + 1) % BUFSIZ;
-		countCOM1 -= 1;
-		break;
-	case COM2:
-		if( countCOM2 == 0 || ( *flags & TXFF_MASK ) ) {
-			return 0;  		/* Can't send right now */
+		// if( (( *flags & TXFF_MASK ) | ( *flags & RXFE_MASK )) == 0 ) {
+		if( ! ( *flags & TXFF_MASK ) ) {
+			*data = (char)(bufferCOM1[frontCOM1]);
+			frontCOM1 = (frontCOM1 + 1) % BUFSIZ;
+			countCOM1 -= 1;
 		}
+	}
+	if( countCOM2 != 0 ) {
 		flags = (int *)( UART2_BASE + UART_FLAG_OFFSET );
 		data = (int *)( UART2_BASE + UART_DATA_OFFSET );
-		*data = bufferCOM2[frontCOM2];
-		frontCOM2 = (frontCOM2 + 1) % BUFSIZ;
-		countCOM2 -= 1;
-		break;
-	default:
-		return -1;
+		// if( (( *flags & TXFF_MASK ) | ( *flags & RXFE_MASK )) == 0 ) {
+		// while( ( *flags & TXFF_MASK ) ) ;
+		if( ! ( *flags & TXFF_MASK ) ) {
+			*data = (char)(bufferCOM2[frontCOM2]);
+			frontCOM2 = (frontCOM2 + 1) % BUFSIZ;
+			countCOM2 -= 1;
+		}
 	}
 	return 0;
 }
@@ -84,7 +84,7 @@ int termsetspeed( int channel, int speed ) {
 	        break;
 	}
 	switch( speed ) {
-	case 115200:	/* Bug here, need a fix!!!!!!!!!!!!!!!!!!!!!!!!!!!*/
+	case 115200:
 		*high = 0x0;
 		*low = 0x3;
 		return 0;
