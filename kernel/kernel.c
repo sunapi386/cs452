@@ -13,27 +13,14 @@
 int main( int argc, char* argv[] ) {
 
     termsetfifo( COM2, OFF );
-    setTimer( 3, 0 );
-    volatile unsigned int tsec = 0;
-    volatile unsigned int sec = 0;
-    volatile unsigned int last_time = 0;
-    volatile unsigned int now;
+    initClock();
     termprintf( COM2, "%c[2J", 27);
+    termprintf( COM2, "%c[%d;%dH", 27, 3, 0);
     termprintf( COM2, ">>>\n\r");
 
     for( ;; ) {
+        doClock();
         termcheckandsend();
-        now = getTimer(3) / 200;
-        if( now != last_time ) {
-            last_time = now;
-            tsec += 1;
-            if( tsec % 10 == 0 ) {
-                tsec = 0; sec += 1;
-            }
-            termprintf( COM2, "%c[%d;%dH", 27, 0, 0);
-            termprintf( COM2, "%u:%u.%u\n\r", sec / 60, sec % 60, tsec );
-            termprintf( COM2, "%c[%d;%dH", 27, 3, 0);
-        }
     }
 
     // termprintf( COM2, "%c[2J", 27);

@@ -27,6 +27,8 @@ int setTimer( int timer, int desired );
 /* Get time from timer */
 int getTimer( int timer );
 
+int initClock();
+
 /* Get clock time */
-int getClock();
+int doClock();
 #endif // __TIMER_H

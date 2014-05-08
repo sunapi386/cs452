@@ -19,7 +19,13 @@
 
 /* Buffer for sending to COM1 and COM2 */
 char bufferCOM1[BUFSIZ] = {'\0'}, bufferCOM2[BUFSIZ] = {'\0'};
+char recvCOM1[BUFSIZ] = {'\0'}, recvCOM2[BUFSIZ] = {'\0'};
 int frontCOM1 = 0, backCOM1 = 0, countCOM1 = 0, frontCOM2 = 0, backCOM2 = 0, countCOM2 = 0;
+int rcvfrontCOM1 = 0, rcvbackCOM1 = 0, rcvcountCOM1 = 0, rcvfrontCOM2 = 0, rcvbackCOM2 = 0, rcvcountCOM2 = 0;
+
+int termcheckandrecv() {
+	return 0;
+}
 
 /* Checks if there are data to send and ready */
 int termcheckandsend() {
@@ -29,7 +35,7 @@ int termcheckandsend() {
 		flags = (int *)( UART1_BASE + UART_FLAG_OFFSET );
 		data = (int *)( UART1_BASE + UART_DATA_OFFSET );
 		// if( (( *flags & TXFF_MASK ) | ( *flags & RXFE_MASK )) == 0 ) {
-		if( ! ( *flags & TXFF_MASK ) ) {
+		while( ! ( *flags & TXFF_MASK ) ) {
 			*data = (char)(bufferCOM1[frontCOM1]);
 			frontCOM1 = (frontCOM1 + 1) % BUFSIZ;
 			countCOM1 -= 1;
@@ -40,7 +46,7 @@ int termcheckandsend() {
 		data = (int *)( UART2_BASE + UART_DATA_OFFSET );
 		// if( (( *flags & TXFF_MASK ) | ( *flags & RXFE_MASK )) == 0 ) {
 		// while( ( *flags & TXFF_MASK ) ) ;
-		if( ! ( *flags & TXFF_MASK ) ) {
+		while( ! ( *flags & TXFF_MASK ) ) {
 			*data = (char)(bufferCOM2[frontCOM2]);
 			frontCOM2 = (frontCOM2 + 1) % BUFSIZ;
 			countCOM2 -= 1;

@@ -25,6 +25,8 @@ typedef char *va_list;
 #define ON	1
 #define	OFF	0
 
+int termcheckandrecv();
+
 int termcheckandsend();
 
 int termsetfifo( int channel, int state );
