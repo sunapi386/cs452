@@ -10,13 +10,32 @@
 #include <kernel.h>
 #include <timer.h>
 
+
 int main( int argc, char* argv[] ) {
     bwsetfifo( COM2, OFF );
-    setTimer( 1, 255 );
+    setTimer( 3, 0 );
+    unsigned int msec = 0;
+    unsigned int sec = 0;
+    unsigned int min = 0;
+    unsigned int last_time = 0;
+    unsigned int now;
 
     for( ;; ) {
-        // if( *timer1val == 0 ) break;
-        bwprintf( COM2, "T11 %d\n\r", getTimer(1) );
+        now = getTimer(3) / 2;
+        if( now != last_time ) {
+            last_time = now;
+            msec += 1;
+        }
+        if( msec % 1000 == 0 ) {
+            bwprintf( COM2, "Clock %umin, %usec, %umsec.\n\r", min, sec, msec);
+            msec = 0;
+            sec += 1;
+        }
+        if( sec % 60 == 0 ) {
+            sec = 0;
+            min += 1;
+        }
+
     }
 
     return 0;

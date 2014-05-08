@@ -16,6 +16,8 @@
 #define TIMER3_VALUE 	(TIMER3_BASE + 0x4)
 #define TIMER3_CONTROL 	(TIMER3_BASE + 0x8)
 
+// extern static unsigned int time;
+
 /* Resets timers */
 // int resetTimer();
 

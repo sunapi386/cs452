@@ -7,6 +7,8 @@
 // 	int *timer1load = (int *)(TIMER1_LOAD);
 // }
 
+
+
 /* Sets the timer to desired value */
 int setTimer( int timer, int desired ) {
 	int *timerload, *timerctl;
@@ -33,5 +35,10 @@ int getTimer( int timer ) {
 	return *timerval;
 }
 
+int checkAndUpdateClock() {
+}
+
 /* Get clock time */
-int getClock();
+int getClock() {
+	// return time;
+}
