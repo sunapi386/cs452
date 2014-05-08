@@ -36,9 +36,10 @@ int getTimer( int timer ) {
 }
 
 int checkAndUpdateClock() {
+	return 0;
 }
 
 /* Get clock time */
 int getClock() {
-	// return time;
+	return 0;
 }

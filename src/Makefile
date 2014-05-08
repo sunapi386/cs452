@@ -1,5 +1,5 @@
 #
-# Makefile for busy-wait IO library
+# Makefile for non-busy-wait IO library
 #
 XCC     = gcc
 AS	= as
@@ -17,18 +17,18 @@ ASFLAGS	= -mcpu=arm920t -mapcs-32
 
 ARFLAGS = rcs
 
-all:  bwio.a timer.a
-	cp bwio.a ../lib/libbwio.a
+all:  termio.a timer.a
+	cp termio.a ../lib/libtermio.a
 	cp timer.a ../lib/libtimer.a
 
-bwio.s: bwio.c
-	$(XCC) -S $(CFLAGS) bwio.c
+termio.s: termio.c
+	$(XCC) -S $(CFLAGS) termio.c
 
-bwio.o: bwio.s
-	$(AS) $(ASFLAGS) -o bwio.o bwio.s
+termio.o: termio.s
+	$(AS) $(ASFLAGS) -o termio.o termio.s
 
-bwio.a: bwio.o
-	$(AR) $(ARFLAGS) $@ bwio.o
+termio.a: termio.o
+	$(AR) $(ARFLAGS) $@ termio.o
 
 timer.s: timer.c
 	$(XCC) -S $(CFLAGS) timer.c
