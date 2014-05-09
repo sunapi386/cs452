@@ -4,10 +4,11 @@
 #define MENU_ROW    2
 #define MENU_COL    0
 #define MENU_INPUT_ROW 10
-#define MENU_INPUT_COL 5
+#define MENU_INPUT_COL 0
 
 void menuInit();
 void menuLine();
-void menuCls();
+void menuHistory();
+void menuParse( char c );
 
 #endif // __MENU_H

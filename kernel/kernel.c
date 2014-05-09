@@ -17,14 +17,17 @@ int main( int argc, char* argv[] ) {
     termsetfifo( COM2, OFF );
     initClock();
     menuInit();
-    menuLine();
     int c;
+
     for( ;; ) {
         doClock();
         termcheckandsend();
+        if( (c = termgetc(COM2)) ) {
+            if( c == 'q' ) { break; }
+            menuParse( c );
+        }
     }
 
-    termprintf( COM2, "Done!\n\r");
     termflush(); /* Do not print anything after this! */
     return 0;
 }

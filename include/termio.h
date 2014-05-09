@@ -5,9 +5,10 @@
  */
 
 
-#define BUFSIZ 255
+#define BUFSIZ 128
 #define ESC         27
 #define CLS             termprintf( COM2, "%c[2J", ESC )
+#define CLLINE			termprintf( COM2, "%c[2K", ESC )
 #define POS(row,col)    termprintf( COM2, "%c[%d;%dH", ESC, row, col )
 #define PRINT( ... )    termprintf( COM2, __VA_ARGS__ )
 #define SAVECURSOR		termprintf( COM2, "%c7", ESC )
@@ -32,8 +33,6 @@ typedef char *va_list;
 #define	OFF	0
 
 void terminit();
-
-int termcheckandrecv();
 
 int termcheckandsend();
 

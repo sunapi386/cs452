@@ -38,30 +38,9 @@ void terminit() { /* Necessary. Depending on compiler is unreliable shit! */
 }
 
 void termflush() {
+	CLLINE;
+	PRINT( "Goodbye!" );
 	while( termcheckandsend() ); /* Don't print anything after while loop */
-}
-
-int termcheckandrecv() {
-	int *flags, *data;
-	if( rcvcountCOM1 < BUFSIZ ) {
-		flags = (int *)( UART1_BASE + UART_FLAG_OFFSET );
-		data = (int *)( UART1_BASE + UART_DATA_OFFSET );
-		if( (*flags & RXFE_MASK) ) {
-			rcvbufCOM1[rcvbackCOM1] = *data;
-			rcvbackCOM1 = (rcvbackCOM1 + 1) % BUFSIZ;
-			rcvcountCOM1 += 1;
-		}
-	}
-	if( rcvcountCOM2 < BUFSIZ ) {
-		flags = (int *)( UART2_BASE + UART_FLAG_OFFSET );
-		data = (int *)( UART2_BASE + UART_DATA_OFFSET );
-		if( (*flags & RXFE_MASK) ) {
-			rcvbufCOM2[rcvbackCOM2] = *data;
-			rcvbackCOM2 = (rcvbackCOM2 + 1) % BUFSIZ;
-			rcvcountCOM2 += 1;
-		}
-	}
-	return 0;
 }
 
 /* Checks if there are data to send and ready, returns number sent */
@@ -203,27 +182,43 @@ void termputw( int channel, int n, char fc, char *bf ) {
 }
 
 int termgetc( int channel ) { /* This still does busy-waiting! */
-	int c = 0;
-
+	int *flags, *data;
+	int ret = 0;
+	if( rcvcountCOM1 < BUFSIZ ) {
+		flags = (int *)( UART1_BASE + UART_FLAG_OFFSET );
+		data = (int *)( UART1_BASE + UART_DATA_OFFSET );
+		if( (*flags & RXFF_MASK) ) {
+			rcvbufCOM1[rcvbackCOM1] = *data;
+			rcvbackCOM1 = (rcvbackCOM1 + 1) % BUFSIZ;
+			rcvcountCOM1 += 1;
+		}
+	}
+	if( rcvcountCOM2 < BUFSIZ ) {
+		flags = (int *)( UART2_BASE + UART_FLAG_OFFSET );
+		data = (int *)( UART2_BASE + UART_DATA_OFFSET );
+		if( (*flags & RXFF_MASK) ) {
+			rcvbufCOM2[rcvbackCOM2] = *data;
+			rcvbackCOM2 = (rcvbackCOM2 + 1) % BUFSIZ;
+			rcvcountCOM2 += 1;
+		}
+	}
 	switch( channel ) {
 	case COM1:
 		if( rcvcountCOM1 > 0 ) {
-			c = (int)(rcvbufCOM1[rcvfrontCOM1]);
+			ret = rcvbufCOM1[rcvfrontCOM1];
 			rcvfrontCOM1 = (rcvfrontCOM1 + 1) % BUFSIZ;
 			rcvcountCOM1 -= 1;
 		}
 		break;
 	case COM2:
 		if( rcvcountCOM2 > 0 ) {
-			c = (int)(rcvbufCOM2[rcvfrontCOM2]);
+			ret = rcvbufCOM2[rcvfrontCOM2];
 			rcvfrontCOM2 = (rcvfrontCOM2 + 1) % BUFSIZ;
 			rcvcountCOM2 -= 1;
 		}
 		break;
-	default:
-		return 0;
 	}
-	return c;
+	return ret;
 }
 
 int terma2d( char ch ) {
