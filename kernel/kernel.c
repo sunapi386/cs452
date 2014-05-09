@@ -16,13 +16,11 @@ int main( int argc, char* argv[] ) {
     terminit();
     termsetfifo( COM2, OFF );
     initClock();
-    CLS;
     menuInit();
     menuLine();
-
+    int c;
     for( ;; ) {
         doClock();
-        // termcheckandrecv();
         termcheckandsend();
     }
 
