@@ -1,7 +1,7 @@
 #ifndef __TERMIO_H
 #define __TERMIO_H
 /*
- * termio.h - like bwio.h but with buffering
+ * termio.h - like bwio.h but with buffering. Handles communication.
  */
 
 

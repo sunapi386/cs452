@@ -1,5 +1,5 @@
 #
-# Makefile for busy-wait IO tests
+# Makefile for the kernel
 #
 XCC     = gcc
 AS		= as
@@ -17,7 +17,7 @@ ASFLAGS	= -mcpu=arm920t -mapcs-32
 LDFLAGS = -init main -Map kernel.map -N  -T orex.ld -L/u/wbcowan/gnuarm-4.0.2/lib/gcc/arm-elf/4.0.2 -L../lib
 
 # Kernel
-LIBS = -lmenu -ltrains -ltermio -ltimer -lgcc
+LIBS = -lscreen -ltrains -ltermio -ltimer -lgcc
 
 all:  kernel.s kernel.elf
 	cp kernel.elf /u/cs452/tftp/ARM/j53sun

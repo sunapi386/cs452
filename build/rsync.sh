@@ -1,6 +1,6 @@
 #!/bin/bash
 echo "Don't run this on j53sun@linux"
-rsync -rtvuz ./ j53sun@linux.student.cs.uwaterloo.ca:~/cs452/
+rsync -rtvuz --exclude .git/ ./ j53sun@linux.student.cs.uwaterloo.ca:~/cs452/
 
 # r recursive
 # t preserve modification times

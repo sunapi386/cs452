@@ -27,6 +27,7 @@ unsigned int rcvfrontCOM1 = 0, rcvbackCOM1 = 0, rcvcountCOM1 = 0;
 unsigned int rcvfrontCOM2 = 0, rcvbackCOM2 = 0, rcvcountCOM2 = 0;
 
 void terminit() { /* Necessary. Depending on compiler is unreliable shit! */
+    termsetfifo( COM2, OFF );
 	int i;
 	for( i = 0; i < BUFSIZ; ++i ) {
 	 	bufferCOM1[i] = bufferCOM2[i] = rcvbufCOM1[i] = rcvbufCOM2[i] = '\0';

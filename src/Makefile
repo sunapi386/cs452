@@ -17,11 +17,10 @@ ASFLAGS	= -mcpu=arm920t -mapcs-32
 
 ARFLAGS = rcs
 
-all:  bwio.a termio.a timer.a menu.a trains.a
-	cp bwio.a ../lib/libbwio.a
+all:  termio.a timer.a screen.a trains.a
 	cp termio.a ../lib/libtermio.a
 	cp timer.a ../lib/libtimer.a
-	cp menu.a ../lib/libmenu.a
+	cp screen.a ../lib/libscreen.a
 	cp trains.a ../lib/libtrains.a
 
 ###################################
@@ -64,17 +63,17 @@ timer.a: timer.o
 	$(AR) $(ARFLAGS) $@ timer.o
 
 ###################################
-# menu
+# screen
 #
 
-menu.s: menu.c
-	$(XCC) -S $(CFLAGS) menu.c
+screen.s: screen.c
+	$(XCC) -S $(CFLAGS) screen.c
 
-menu.o: menu.s
-	$(AS) $(ASFLAGS) -o menu.o menu.s
+screen.o: screen.s
+	$(AS) $(ASFLAGS) -o screen.o screen.s
 
-menu.a: menu.o
-	$(AR) $(ARFLAGS) $@ menu.o
+screen.a: screen.o
+	$(AR) $(ARFLAGS) $@ screen.o
 
 ###################################
 # trains
