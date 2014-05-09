@@ -38,8 +38,11 @@ void terminit() { /* Necessary. Depending on compiler is unreliable shit! */
 }
 
 void termflush() {
+	SAVECURSOR;
+	POS( STATUS_X, STATUS_Y );
 	CLLINE;
 	PRINT( "Goodbye!" );
+	// LOADCURSOR;
 	while( termcheckandsend() ); /* Don't print anything after while loop */
 }
 

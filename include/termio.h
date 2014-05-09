@@ -5,7 +5,7 @@
  */
 
 
-#define BUFSIZ 128
+#define BUFSIZ 		1024
 #define ESC         27
 #define CLS             termprintf( COM2, "%c[2J", ESC )
 #define CLLINE			termprintf( COM2, "%c[2K", ESC )
@@ -13,6 +13,8 @@
 #define PRINT( ... )    termprintf( COM2, __VA_ARGS__ )
 #define SAVECURSOR		termprintf( COM2, "%c7", ESC )
 #define LOADCURSOR		termprintf( COM2, "%c8", ESC )
+#define STATUS_X	10
+#define STATUS_Y	1
 
 typedef char *va_list;
 

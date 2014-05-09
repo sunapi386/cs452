@@ -31,21 +31,28 @@ void menuInit() {
 	POS( MENU_ROW + 1, MENU_COL );	/* Go down next line */
 	PRINT( "CS 452 Train Control Menu" ); /* Align under * */
 	POS( MENU_ROW + 2, MENU_COL );  /* Next line */
-	PRINT( "Quit (q)");
-	POS( MENU_INPUT_ROW - 2, MENU_INPUT_COL ); /* Next line */
+	PRINT( "(q) quit");
+	POS( MENU_ROW + 3, MENU_COL );  /* Next line */
+	PRINT( "(s) start trains");
+	POS( MENU_ROW + 4, MENU_COL );  /* Next line */
+	PRINT( "(t) stop trains");
+	POS( MENU_ROW + 5, MENU_COL ); /* Next line */
+	PRINT( "(r) reverse trains");
+	POS( MENU_ROW + 6, MENU_COL ); /* Next line */
 	PRINT("****************************");
-	POS( MENU_INPUT_ROW, MENU_INPUT_COL ); /* Park the cursor */
+	POS( MENU_ROW + 7, MENU_COL ); /* Next line */
 }
 
 /* Moves cursor to line 4 and prints a prompt */
 void menuLine() {
+	POS( MENU_INPUT_ROW, MENU_INPUT_COL ); /* Park the cursor */
 	CLLINE;
 	POS( MENU_INPUT_ROW, MENU_INPUT_COL ); /* Park the cursor */
 }
 
 void menuHistory() {
 	POS( MENU_INPUT_ROW - 1, 0 );
-	PRINT( "%s", parsebuffer );
+	PRINT( "=> %s", parsebuffer );
 }
 
 void menuParse( char c ) {
@@ -60,3 +67,4 @@ void menuParse( char c ) {
 	PRINT( "%c", c );
 	bufferAdd( c );
 }
+
