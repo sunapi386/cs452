@@ -9,22 +9,25 @@
 #include <ts7200.h>
 #include <timer.h>
 #include <termio.h>
+#include <menu.h>
+#include <trains.h>
 
 int main( int argc, char* argv[] ) {
-
+    terminit();
     termsetfifo( COM2, OFF );
     initClock();
-    termprintf( COM2, "%c[2J", 27);
-    termprintf( COM2, "%c[%d;%dH", 27, 3, 0);
-    termprintf( COM2, ">>>\n\r");
+    CLS;
+    menuInit();
+    menuLine();
 
     for( ;; ) {
         doClock();
+        // termcheckandrecv();
         termcheckandsend();
     }
 
-    // termprintf( COM2, "%c[2J", 27);
-    // termprintf( COM2, "Done!\n\r");
+    termprintf( COM2, "Done!\n\r");
+    termflush(); /* Do not print anything after this! */
     return 0;
 }
 

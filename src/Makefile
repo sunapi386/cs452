@@ -1,5 +1,5 @@
 #
-# Makefile for non-busy-wait IO library
+# Makefile for libraries
 #
 XCC     = gcc
 AS	= as
@@ -17,10 +17,16 @@ ASFLAGS	= -mcpu=arm920t -mapcs-32
 
 ARFLAGS = rcs
 
-all:  bwio.a termio.a timer.a
+all:  bwio.a termio.a timer.a menu.a trains.a
 	cp bwio.a ../lib/libbwio.a
 	cp termio.a ../lib/libtermio.a
 	cp timer.a ../lib/libtimer.a
+	cp menu.a ../lib/libmenu.a
+	cp trains.a ../lib/libtrains.a
+
+###################################
+# bwio
+#
 
 bwio.s: bwio.c
 	$(XCC) -S $(CFLAGS) bwio.c
@@ -31,6 +37,10 @@ bwio.o: bwio.s
 bwio.a: bwio.o
 	$(AR) $(ARFLAGS) $@ bwio.o
 
+###################################
+# termio
+#
+
 termio.s: termio.c
 	$(XCC) -S $(CFLAGS) termio.c
 
@@ -40,6 +50,10 @@ termio.o: termio.s
 termio.a: termio.o
 	$(AR) $(ARFLAGS) $@ termio.o
 
+###################################
+# timer
+#
+
 timer.s: timer.c
 	$(XCC) -S $(CFLAGS) timer.c
 
@@ -48,6 +62,37 @@ timer.o: timer.s
 
 timer.a: timer.o
 	$(AR) $(ARFLAGS) $@ timer.o
+
+###################################
+# menu
+#
+
+menu.s: menu.c
+	$(XCC) -S $(CFLAGS) menu.c
+
+menu.o: menu.s
+	$(AS) $(ASFLAGS) -o menu.o menu.s
+
+menu.a: menu.o
+	$(AR) $(ARFLAGS) $@ menu.o
+
+###################################
+# trains
+#
+
+trains.s: trains.c
+	$(XCC) -S $(CFLAGS) trains.c
+
+trains.o: trains.s
+	$(AS) $(ASFLAGS) -o trains.o trains.s
+
+trains.a: trains.o
+	$(AR) $(ARFLAGS) $@ trains.o
+
+
+###################################
+# clean
+#
 
 clean:
 	-rm -f *.s *.a *.o

@@ -2,7 +2,7 @@ ENTRY (main)
 
 MEMORY
 {
-ram : ORIGIN = 0x00000000, LENGTH = 32M
+ram : ORIGIN = 0x00002100, LENGTH = 32M /* Offset by 0x2100 */
 rom : ORIGIN = 0x60000000, LENGTH = 8M
 }
 

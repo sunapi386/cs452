@@ -8,7 +8,6 @@
 #include <ts7200.h>
 #include <termio.h>
 
-
 /*
  * The UARTs are initialized by RedBoot to the following state
  * 	115,200 bps
@@ -18,41 +17,79 @@
  */
 
 /* Buffer for sending to COM1 and COM2 */
+/* Buffer for receiving from COM1 and COM2 */
+/* Necessary to init to 0 because we don't have .bss segment setup */
 char bufferCOM1[BUFSIZ] = {'\0'}, bufferCOM2[BUFSIZ] = {'\0'};
-char recvCOM1[BUFSIZ] = {'\0'}, recvCOM2[BUFSIZ] = {'\0'};
-int frontCOM1 = 0, backCOM1 = 0, countCOM1 = 0, frontCOM2 = 0, backCOM2 = 0, countCOM2 = 0;
-int rcvfrontCOM1 = 0, rcvbackCOM1 = 0, rcvcountCOM1 = 0, rcvfrontCOM2 = 0, rcvbackCOM2 = 0, rcvcountCOM2 = 0;
+char rcvbufCOM1[BUFSIZ] = {'\0'}, rcvbufCOM2[BUFSIZ] = {'\0'};
+unsigned int frontCOM1 = 0, backCOM1 = 0, countCOM1 = 0;
+unsigned int frontCOM2 = 0, backCOM2 = 0, countCOM2 = 0;
+unsigned int rcvfrontCOM1 = 0, rcvbackCOM1 = 0, rcvcountCOM1 = 0;
+unsigned int rcvfrontCOM2 = 0, rcvbackCOM2 = 0, rcvcountCOM2 = 0;
+
+void terminit() { /* Necessary. Depending on compiler is unreliable shit! */
+	int i;
+	for( i = 0; i < BUFSIZ; ++i ) {
+	 	bufferCOM1[i] = bufferCOM2[i] = rcvbufCOM1[i] = rcvbufCOM2[i] = '\0';
+	}
+	frontCOM1 = backCOM1 = countCOM1 = 0;
+	frontCOM2 = backCOM2 = countCOM2 = 0;
+	rcvfrontCOM1 = rcvbackCOM1 = rcvcountCOM1 = 0;
+	rcvfrontCOM2 = rcvbackCOM2 = rcvcountCOM2 = 0;
+}
+
+void termflush() {
+	while( termcheckandsend() ); /* Don't print anything after while loop */
+}
 
 int termcheckandrecv() {
+	int *flags, *data;
+	if( rcvcountCOM1 < BUFSIZ ) {
+		flags = (int *)( UART1_BASE + UART_FLAG_OFFSET );
+		data = (int *)( UART1_BASE + UART_DATA_OFFSET );
+		if( (*flags & RXFE_MASK) ) {
+			rcvbufCOM1[rcvbackCOM1] = *data;
+			rcvbackCOM1 = (rcvbackCOM1 + 1) % BUFSIZ;
+			rcvcountCOM1 += 1;
+		}
+	}
+	if( rcvcountCOM2 < BUFSIZ ) {
+		flags = (int *)( UART2_BASE + UART_FLAG_OFFSET );
+		data = (int *)( UART2_BASE + UART_DATA_OFFSET );
+		if( (*flags & RXFE_MASK) ) {
+			rcvbufCOM2[rcvbackCOM2] = *data;
+			rcvbackCOM2 = (rcvbackCOM2 + 1) % BUFSIZ;
+			rcvcountCOM2 += 1;
+		}
+	}
 	return 0;
 }
 
-/* Checks if there are data to send and ready */
+/* Checks if there are data to send and ready, returns number sent */
 int termcheckandsend() {
 	// if( count != 0 && ( *flags & TXFE_MASK ) && ( *flags & RXFE_MASK) ) {
 	int *flags, *data;
-	if( countCOM1 != 0 ) {
+	int ret = 0;
+	if( countCOM1 > 0 ) {
 		flags = (int *)( UART1_BASE + UART_FLAG_OFFSET );
 		data = (int *)( UART1_BASE + UART_DATA_OFFSET );
-		// if( (( *flags & TXFF_MASK ) | ( *flags & RXFE_MASK )) == 0 ) {
-		while( ! ( *flags & TXFF_MASK ) ) {
+		if( ! ( *flags & TXFF_MASK ) ) {
 			*data = (char)(bufferCOM1[frontCOM1]);
 			frontCOM1 = (frontCOM1 + 1) % BUFSIZ;
 			countCOM1 -= 1;
 		}
+		ret = 1;
 	}
-	if( countCOM2 != 0 ) {
+	if( countCOM2 > 0 ) {
 		flags = (int *)( UART2_BASE + UART_FLAG_OFFSET );
 		data = (int *)( UART2_BASE + UART_DATA_OFFSET );
-		// if( (( *flags & TXFF_MASK ) | ( *flags & RXFE_MASK )) == 0 ) {
-		// while( ( *flags & TXFF_MASK ) ) ;
-		while( ! ( *flags & TXFF_MASK ) ) {
+		if( ! ( *flags & TXFF_MASK ) ) {
 			*data = (char)(bufferCOM2[frontCOM2]);
 			frontCOM2 = (frontCOM2 + 1) % BUFSIZ;
 			countCOM2 -= 1;
 		}
+		ret += 1;
 	}
-	return 0;
+	return ret;
 }
 
 int termsetfifo( int channel, int state ) {
@@ -166,24 +203,26 @@ void termputw( int channel, int n, char fc, char *bf ) {
 }
 
 int termgetc( int channel ) { /* This still does busy-waiting! */
-	int *flags, *data;
-	unsigned char c;
+	int c = 0;
 
 	switch( channel ) {
 	case COM1:
-		flags = (int *)( UART1_BASE + UART_FLAG_OFFSET );
-		data = (int *)( UART1_BASE + UART_DATA_OFFSET );
+		if( rcvcountCOM1 > 0 ) {
+			c = (int)(rcvbufCOM1[rcvfrontCOM1]);
+			rcvfrontCOM1 = (rcvfrontCOM1 + 1) % BUFSIZ;
+			rcvcountCOM1 -= 1;
+		}
 		break;
 	case COM2:
-		flags = (int *)( UART2_BASE + UART_FLAG_OFFSET );
-		data = (int *)( UART2_BASE + UART_DATA_OFFSET );
+		if( rcvcountCOM2 > 0 ) {
+			c = (int)(rcvbufCOM2[rcvfrontCOM2]);
+			rcvfrontCOM2 = (rcvfrontCOM2 + 1) % BUFSIZ;
+			rcvcountCOM2 -= 1;
+		}
 		break;
 	default:
-		return -1;
-		break;
+		return 0;
 	}
-	while ( !( *flags & RXFF_MASK ) ) ;
-	c = *data;
 	return c;
 }
 

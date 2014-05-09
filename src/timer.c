@@ -3,11 +3,6 @@
 #include <termio.h>
 /* Timer functions. See Cirrus Logic page 427 for timers register map */
 
-// /* Resets timers */
-// int resetTimers() {
-// 	int *timer1load = (int *)(TIMER1_LOAD);
-// }
-
 unsigned int tsec = 0, sec = 0, min = 0, last_time = 0, now = 0;
 
 /* Sets the timer to desired value */
@@ -38,7 +33,7 @@ int getTimer( int timer ) {
 
 int initClock() {
 	setTimer( 3, 0 );
-	tsec = sec = min = 0;
+	tsec = sec = min = last_time = now = 0;
 	return 0;
 }
 
@@ -48,9 +43,10 @@ int doClock() {
     if( now != last_time ) {
         last_time = now;
         tsec += 1;
-	    termprintf( COM2, "%c[%d;%dH", 27, 0, 0);
-	    termprintf( COM2, "%u:%u.%u\n\r", min, sec % 60, tsec % 10 );
-	    termprintf( COM2, "%c[%d;%dH", 27, 3, 0); /* return where curser was */
+        termprintf( COM2, "%c7", 27 ); /* Save cursor location */
+	    termprintf( COM2, "%c[%d;%dH", 27, 0, 0 ); /* Print in corner 0, 0 */
+	    termprintf( COM2, "%u:%u.%u", min, sec % 60, tsec % 10 );
+	    termprintf( COM2, "%c8", 27 ); /* return where curser was */
         if( tsec % 10 == 0 ) {
             sec += 1;
             if( sec % 60 == 0 ) {
