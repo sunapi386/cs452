@@ -7,21 +7,19 @@ void trainsInit() {
     termsetfifo( COM1, OFF );
 }
 
-void trainsLight( int on_off ) {
-    termprintf( COM1, "%c", LIGHT_ADDR );
+void trainsSet( unsigned int train_num, unsigned int train_speed ) {
+    termprintf( COM1, "%c%c", TRAIN_GO );
+    screenTrains( "Set train %u speed %u", train_num, train_speed );
 }
 
-void trainsStop() {
-    termprintf( COM1, "%c", 97 );
-    screenTrains( "Train stop" );
+void trainsReverse( unsigned int train_num ) {
+    termprintf( COM1, "%c", TRAIN_GO );
+    screenTrains( "Reverse train %u", train_num );
 }
 
-void trainsGo() {
-    termprintf( COM1, "%c", 96 );
-    screenTrains( "Trains go" );
+void trainsSwitch( unsigned int switch_num, char switch_direction ) {
+    termprintf( COM1, "%c", TRAIN_GO );
+    screenTrains( "Switch %u direction %c", switch_num, switch_direction );
 }
 
-void trainsSendCmd( int cmd, int tid ) {
-    termprintf( COM1, "%c%c", cmd, tid );
-    screenTrains( "Issued %u to train %u", cmd, tid );
-}
+

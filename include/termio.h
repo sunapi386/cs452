@@ -5,10 +5,11 @@
  */
 
 
-#define BUFSIZ 		1024
+#define BUFSIZ 		2048
 #define ESC         27
 #define CLS             termprintf( COM2, "%c[2J", ESC )
 #define CLLINE			termprintf( COM2, "%c[2K", ESC )
+#define CLTOEND			termprintf( COM2, "%c[0K", ESC )
 #define POS(row,col)    termprintf( COM2, "%c[%d;%dH", ESC, row, col )
 #define PRINT( ... )    termprintf( COM2, __VA_ARGS__ )
 #define SAVECURSOR		termprintf( COM2, "%c7", ESC )
@@ -39,6 +40,8 @@ void terminit();
 int termcheckandsend();
 
 void termflush(); /* Finishes sending buffers */
+
+int termatoi( char* str ); /* A simple atoi() function */
 
 int termsetfifo( int channel, int state );
 

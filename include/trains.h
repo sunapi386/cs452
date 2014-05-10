@@ -4,16 +4,12 @@
 
 /* Handles controlling of the trains */
 
-#define LIGHT_ADDR 96
+#define TRAIN_GO 96
+#define TRAIN_STOP 97
 
 void trainsInit();
-
-void trainsLight( int on_off );
-
-void trainsStop();
-
-void trainsGo();
-
-void trainsSendCmd( int cmd, int tid );
+void trainsSet( unsigned int train_num, unsigned int train_speed );
+void trainsReverse( unsigned int train_num );
+void trainsSwitch( unsigned int switch_num, char switch_direction );
 
 #endif // __TRAINS_H

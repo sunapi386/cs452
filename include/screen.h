@@ -3,25 +3,65 @@
 
 /* Menu is responsible for doing any sorts of output to the terminal
 *  and general user interface stuff.
++-------------------------------------------------------------------+
+| Sensor Data                     |  Track Switch States            |
+|---------------------------------+---------------------------------|
+|                                 |                                 |
+|                                 |                                 |
+|                                 |                                 |
+|                                 |                                 |
+|                                 |                                 |
+|                                 |                                 |
+|                                 |                                 |
+|                                 |                                 |
+|                                 |                                 |
+|                                 |                                 |
+|                                 |                                 |
+|                                 |                                 |
+|-------------------------------------------------------------------|
+| Jason Sun's CS 452 Controller   | Clock                           |
+|-------------------------------------------------------------------|
+|                                                                   |
+| $                                                                 |
+|-------------------------------------------------------------------|
+| Commands: tr                                                      |
+| q         sw                                                      |
++-------------------------------------------------------------------+
 */
 
 #include <termio.h>
 
-#define SCREEN_ROW    1
-#define SCREEN_COL    0
-#define SCREEN_INPUT_ROW 12
-#define SCREEN_INPUT_COL 0
-#define SCREEN_TRAIN_ACTION_ROW 10
-#define SCREEN_TRAIN_ACTION_COL 2
+
+#define SCREEN_BEGIN_ROW  0
+#define SCREEN_BEGIN_COL  0
+
+#define SCREEN_SENSR_ROW 4
+#define SCREEN_SENSR_COL 3
+
+#define SCREEN_TRACK_ROW 4
+#define SCREEN_TRACK_COL 37
+
+#define SCREEN_CLOCK_ROW 17
+#define SCREEN_CLOCK_COL 43
+
+#define SCREEN_INPUT_ROW 20
+#define SCREEN_INPUT_COL 5
+
+#define SCREEN_PREVC_ROW 19
+#define SCREEN_PREVC_COL 5
+
 
 void screenInit();
-void screenLine();
+void screenClearInputLine();
 void screenMenu();
 // void screenHistory();
 int screenAdd( char c );
 void screenParse();
-/* Prints the ... variable args to PRINT( ... ) in the desired location */
+void screenUpdateHistory();
+void screenClearInputLine();
+void screenPrintClock( int min, int sec, int tsec );
 void screenTrains( char *msg, ... );
+void screenQuit();
 
 /* Train stuff */
 

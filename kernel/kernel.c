@@ -12,17 +12,25 @@ int main( int argc, char* argv[] ) {
     screenInit();
 
     int c;
+    termflush();
 
     for( ;; ) {
         doClock();
         termcheckandsend();
         if( (c = termgetc(COM2)) ) {
-            if( c == '\r' ) { screenParse(); }
-            else { screenAdd( c ); }
+            if( c == 'q' ) {
+                break;
+            }
+            else if( c == '\r' ) {
+                screenParse();
+            }
+            else {
+                screenAdd( c );
+            }
         } // if
     } // for
 
-    termflush(); /* Do not print anything after this! */
+    screenQuit(); /* Do not print anything after this! */
     return 0;
 } // main
 

@@ -1,0 +1,3 @@
+Issues
+
+[termio] When buffer full should send ^S to signal to stop sending. Do this before the buffer actually gets full!

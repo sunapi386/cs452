@@ -38,13 +38,20 @@ void terminit() { /* Necessary. Depending on compiler is unreliable shit! */
 	rcvfrontCOM2 = rcvbackCOM2 = rcvcountCOM2 = 0;
 }
 
+int termatoi( char *str ) { /* http://www.geeksforgeeks.org/write-your-own-atoi/ */
+    int res = 0, sign = 1, i = 0;
+    if (str[0] == '-') { // negative, update sign
+        sign = -1;
+        i++;
+    }
+    for (; str[i] != '\0'; ++i) { /* iterate through digits and update result */
+        res = res*10 + str[i] - '0';
+    }
+    return (sign * res);
+}
+
 void termflush() {
-	SAVECURSOR;
-	POS( STATUS_X, STATUS_Y );
-	CLLINE;
-	PRINT( "Goodbye!" );
-	// LOADCURSOR;
-	while( termcheckandsend() ); /* Don't print anything after while loop */
+	while( countCOM2 > 0 && termcheckandsend() != 0 ); /* Don't print anything after while loop */
 }
 
 /* Checks if there are data to send and ready, returns number sent */
