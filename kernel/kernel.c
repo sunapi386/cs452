@@ -10,26 +10,28 @@ int main( int argc, char* argv[] ) {
     trainsInit();
     initClock();
     screenInit();
-
-    int c;
+    trainsSwitchInit();
     termflush();
+    // int c;
 
-    for( ;; ) {
-        doClock();
-        termcheckandsend();
-        if( (c = termgetc(COM2)) ) {
-            if( c == 'q' ) {
-                break;
-            }
-            else if( c == '\r' ) {
-                screenParse();
-            }
-            else {
-                screenAdd( c );
-            }
-        } // if
-    } // for
-
+    // for( ;; ) {
+    //     doClock();
+    //     termcheckandsend();
+    //     trainsSensorPoll();
+    //     if( (c = termgetc(COM2)) ) {
+    //         if( c == 'q' ) {
+    //             break;
+    //         }
+    //         else if( c == '\r' ) {
+    //             screenParse();
+    //         }
+    //         else {
+    //             screenAdd( c );
+    //         }
+    //     } // if
+    // } // for
+    // CLS;
+    trainsQuit();
     screenQuit(); /* Do not print anything after this! */
     return 0;
 } // main

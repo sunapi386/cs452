@@ -62,7 +62,7 @@
 	#define RTIEN_MASK	0x40	// receive timeout int
 	#define LBEN_MASK	0x80	// loopback
 #define UART_FLAG_OFFSET	0x18	// low 8 bits
-	#define CTS_MASK	0x1
+	#define CTS_MASK	0x1 // true before sending to train
 	#define DCD_MASK	0x2
 	#define DSR_MASK	0x4
 	#define TXBUSY_MASK	0x8

@@ -1,42 +1,17 @@
 -------------------------------------------------------------------+
 | Sensor Data                     |  Track Switch States            |
 |---------------------------------+---------------------------------|
-|                                 |                                 |
-|                                 |                                 |
-|                                 |                                 |
-|                                 |                                 |
-|                                 |                                 |
-|                                 |                                 |
-|                                 |                                 |
-|                                 |                                 |
-|                                 |                                 |
-|                                 |                                 |
-|                                 |                                 |
-|                                 |                                 |
-|-------------------------------------------------------------------|
-| Jason Sun's CS 452 Controller   | Clock min:sec:ms                |
-|-------------------------------------------------------------------|
-|                                                                   |
-| $                                                                 |
-|-------------------------------------------------------------------|
-| Commands: | tr train_num train_speed       | rv train_number      |
-|           | sw switch_num switch_direction | q                    |
-+-------------------------------------------------------------------+
-
-+-------------------------------------------------------------------+
-| Sensor Data                     |  Track Switch States            |
-|---------------------------------+---------------------------------|
-|                                 |                                 |
-|                                 |                                 |
-|                                 |                                 |
-|                                 |                                 |
-|                                 |                                 |
-|                                 |                                 |
-|                                 |                                 |
-|                                 |                                 |
-|                                 |                                 |
-|                                 |                                 |
-|                                 |                                 |
+| 1  :         13 :               |                                 |
+| 2  :         14 :               |                                 |
+| 3  :         15 :               |                                 |
+| 4  :         16 :               |                                 |
+| 5  :         17 :               |                                 |
+| 6  :         18 :               |                                 |
+| 7  :       0x99 :               |                                 |
+| 8  :       0x9A :               |                                 |
+| 9  :       0x9B :               |                                 |
+| 10 :       0x9C :               |                                 |
+| 11 :                            |                                 |
 |                                 |                                 |
 |-------------------------------------------------------------------|
 | Jason Sun's CS 452 Controller   | Clock min:sec:ms                |
@@ -47,35 +22,3 @@
 | Commands: | tr train_num train_speed       | rv train_number      |
 |           | sw switch_num switch_direction | q                    |
 +-------------------------------------------------------------------+
-
-    int i;
-    CLS;
-    POS( SCREEN_BEGIN_ROW, SCREEN_BEGIN_COL );
-    PRINT( "+-------------------------------------------------------------------+" );
-    POS( SCREEN_BEGIN_ROW + 1, SCREEN_BEGIN_COL );
-    PRINT( "| Sensor Data                     |  Track Switch States            |" );
-    POS( SCREEN_BEGIN_ROW + 2, SCREEN_BEGIN_COL );
-    PRINT( "|---------------------------------+---------------------------------|");
-    for( int i = 3; i < 16; ++i ) {
-        POS( SCREEN_BEGIN_ROW + i, SCREEN_BEGIN_COL );          PRINT( "|" );
-        POS( SCREEN_BEGIN_ROW + i, SCREEN_BEGIN_COL + 35 );     PRINT( "|" );
-        POS( SCREEN_BEGIN_ROW + i, SCREEN_BEGIN_COL + 35 );     PRINT( "|" );
-
-        PRINT("|                                 |                                 |");
-    }
-    POS( SCREEN_BEGIN_ROW + 16, SCREEN_BEGIN_COL );
-    PRINT( "|-------------------------------------------------------------------|" );
-    POS( SCREEN_BEGIN_ROW + 17, SCREEN_BEGIN_COL );
-    PRINT( "| Jason Sun's CS 452 Controller   | Clock min:sec:ms                |" );
-    POS( SCREEN_BEGIN_ROW + 18, SCREEN_BEGIN_COL );
-    PRINT( "|-------------------------------------------------------------------|" );
-    POS( SCREEN_BEGIN_ROW + 19, SCREEN_BEGIN_COL );
-    PRINT( "| [j]$                                                              |" );
-    POS( SCREEN_BEGIN_ROW + 20, SCREEN_BEGIN_COL );
-    PRINT( "|-------------------------------------------------------------------|" );
-    POS( SCREEN_BEGIN_ROW + 21, SCREEN_BEGIN_COL );
-    PRINT( "|                                                                   |" );
-    POS( SCREEN_BEGIN_ROW + 22, SCREEN_BEGIN_COL );
-    PRINT( "| $                                                                 |" );
-    POS( SCREEN_BEGIN_ROW + 23, SCREEN_BEGIN_COL );
-    PRINT( "+-------------------------------------------------------------------+" );

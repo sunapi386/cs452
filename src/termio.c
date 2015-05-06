@@ -51,7 +51,8 @@ int termatoi( char *str ) { /* http://www.geeksforgeeks.org/write-your-own-atoi/
 }
 
 void termflush() {
-	while( countCOM2 > 0 && termcheckandsend() != 0 ); /* Don't print anything after while loop */
+	termcheckandsend();
+	// while(  ); /* Don't print anything after while loop */
 }
 
 /* Checks if there are data to send and ready, returns number sent */
@@ -62,7 +63,7 @@ int termcheckandsend() {
 	if( countCOM1 > 0 ) {
 		flags = (int *)( UART1_BASE + UART_FLAG_OFFSET );
 		data = (int *)( UART1_BASE + UART_DATA_OFFSET );
-		if( ! ( *flags & TXFF_MASK ) ) {
+		if( ! ( *flags & TXFF_MASK ) && (*flags & CTS_MASK) && ! (*flags & TXBUSY_MASK) ) {
 			*data = (char)(bufferCOM1[frontCOM1]);
 			frontCOM1 = (frontCOM1 + 1) % BUFSIZ;
 			countCOM1 -= 1;
@@ -77,7 +78,7 @@ int termcheckandsend() {
 			frontCOM2 = (frontCOM2 + 1) % BUFSIZ;
 			countCOM2 -= 1;
 		}
-		ret += 1;
+		ret = 2;
 	}
 	return ret;
 }
@@ -123,7 +124,7 @@ int termsetspeed( int channel, int speed ) {
 		return 0;
 	case 2400:
 		*high = 0x0;
-		*low = 0xbf; // should be this 0xbf.
+		*low = 0xbf;
 		return 0;
 	default:
 		return -1;
@@ -192,7 +193,7 @@ void termputw( int channel, int n, char fc, char *bf ) {
 	while( ( ch = *bf++ ) ) termputc( channel, ch );
 }
 
-int termgetc( int channel ) { /* This still does busy-waiting! */
+int termgetc( int channel ) {
 	int *flags, *data;
 	int ret = 0;
 	if( rcvcountCOM1 < BUFSIZ ) {

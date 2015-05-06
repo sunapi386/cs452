@@ -35,16 +35,16 @@ int screenAdd( char c ) {
 
 
 void screenMenu() {
-    int line;
-    for( line = 0; line < 25; ++line ) {
-        POS( SCREEN_BEGIN_ROW + line, SCREEN_BEGIN_COL );      PRINT( "|" );
-        POS( SCREEN_BEGIN_ROW + line, SCREEN_BEGIN_COL + 69 ); PRINT( "|" );
-        if( line >= 2 && line <= 17 ) {
-            POS( SCREEN_BEGIN_ROW + line, SCREEN_BEGIN_COL + 35 ); PRINT( "|" );
-        }
-    }
+    // int line;
+    // for( line = 0; line < 25; ++line ) {
+    //     POS( SCREEN_BEGIN_ROW + line, SCREEN_BEGIN_COL );      PRINT( "|" );
+    //     POS( SCREEN_BEGIN_ROW + line, SCREEN_BEGIN_COL + 69 ); PRINT( "|" );
+    //     if( line >= 2 && line <= 17 ) {
+    //         POS( SCREEN_BEGIN_ROW + line, SCREEN_BEGIN_COL + 35 ); PRINT( "|" );
+    //     }
+    // }
     POS( SCREEN_BEGIN_ROW + 1, SCREEN_BEGIN_COL );
-    PRINT( "|---------------------------------+---------------------------------|" );
+    PRINT( "|-------------------------------------------------------------------|" );
     POS( SCREEN_BEGIN_ROW + 2, SCREEN_BEGIN_COL );
     PRINT( "| Sensor Data                     |  Track Switch States            |" );
     POS( SCREEN_BEGIN_ROW + 3, SCREEN_BEGIN_COL );
@@ -54,17 +54,20 @@ void screenMenu() {
     POS( SCREEN_BEGIN_ROW + 17, SCREEN_BEGIN_COL );
     PRINT( "| Jason Sun's CS 452 Controller   | Clock                           |" );
     POS( SCREEN_BEGIN_ROW + 18, SCREEN_BEGIN_COL );
-    PRINT( "|---------------------------------+---------------------------------|" );
+    PRINT( "|-------------------------------------------------------------------|" );
     POS( SCREEN_BEGIN_ROW + 20, SCREEN_BEGIN_COL + 3 );
     PRINT( "$" );
     POS( SCREEN_BEGIN_ROW + 21, SCREEN_BEGIN_COL );
-    PRINT( "|---------------------------------+---------------------------------|" );
-    POS( SCREEN_BEGIN_ROW + 22, SCREEN_BEGIN_COL );
-    PRINT( "| Commands: | tr train_num train_speed       | rv train_number      |" );
-    POS( SCREEN_BEGIN_ROW + 23, SCREEN_BEGIN_COL );
-    PRINT( "|           | sw switch_num switch_direction | q                    |" );
-    POS( SCREEN_BEGIN_ROW + 24, SCREEN_BEGIN_COL );
-    PRINT( "|---------------------------------+---------------------------------|" );
+    // PRINT( "|-------------------------------------------------------------------|" );
+    // POS( SCREEN_BEGIN_ROW + 22, SCREEN_BEGIN_COL );
+    // PRINT( "| Commands: | tr train_num train_speed       | rv train_number      |" );
+    // POS( SCREEN_BEGIN_ROW + 23, SCREEN_BEGIN_COL );
+    // PRINT( "|           | sw switch_num switch_direction | q                    |" );
+    // POS( SCREEN_BEGIN_ROW + 24, SCREEN_BEGIN_COL );
+    // PRINT( "|-------------------------------------------------------------------|" );
+    /* Track sensor */
+    POS( SCREEN_BEGIN_ROW + 4, SCREEN_BEGIN_COL );
+    PRINT( "| 1  :         13 :\n| 2  :         14 :\n| 3  :         15 :\n| 4  :         16 :\n| 5  :         17 :\n| 6  :         18 :\n| 7  :       0x99 :\n| 8  :       0x9A :\n| 9  :       0x9B :\n| 10 :       0x9C :\n| 11 :             " );
     screenClearInputLine();
 }
 
@@ -98,7 +101,7 @@ void screenParse() {
             // unsigned int train_num = 48;
             // unsigned int train_speed = 30;
             // trainsSet( train_num, train_speed );
-            trainsSet( 48, 30 );
+            trainsSet( 48, 10 );
             break;
         }
         case 'r':
@@ -113,7 +116,7 @@ void screenParse() {
             // unsigned int switch_num = 9;
             // char switch_direction = 'C';
             // trainsSwitch( switch_num, switch_direction );
-            trainsSwitch( 9, 'C' );
+            trainsSwitch( 14, 'C' );
             break;
         }
         default:  screenTrains( "Unknown command %s", parsebuffer );
@@ -139,6 +142,6 @@ void screenTrains( char *msg, ... ) {
 }
 
 void screenQuit() {
-    PRINT( "Goodbye\n\r" );
+    PRINT( "goodbye" );
     termflush();
 }

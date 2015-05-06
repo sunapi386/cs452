@@ -1,0 +1,165 @@
+Archive member included because of file (symbol)
+
+../lib/libscreen.a(screen.o)  kernel.o (screenInit)
+../lib/libtrains.a(trains.o)  kernel.o (trainsInit)
+../lib/libtermio.a(termio.o)  kernel.o (terminit)
+../lib/libtimer.a(timer.o)    kernel.o (initClock)
+/u/wbcowan/gnuarm-4.0.2/lib/gcc/arm-elf/4.0.2/libgcc.a(_udivsi3.o)
+                              ../lib/libtermio.a(termio.o) (__udivsi3)
+/u/wbcowan/gnuarm-4.0.2/lib/gcc/arm-elf/4.0.2/libgcc.a(_umodsi3.o)
+                              ../lib/libtermio.a(termio.o) (__umodsi3)
+/u/wbcowan/gnuarm-4.0.2/lib/gcc/arm-elf/4.0.2/libgcc.a(_dvmd_tls.o)
+                              /u/wbcowan/gnuarm-4.0.2/lib/gcc/arm-elf/4.0.2/libgcc.a(_udivsi3.o) (__div0)
+
+Memory Configuration
+
+Name             Origin             Length             Attributes
+ram              0x0000000000002100 0x0000000002000000
+rom              0x0000000060000000 0x0000000000800000
+*default*        0x0000000000000000 0xffffffffffffffff
+
+Linker script and memory map
+
+
+data            0x0000000000002100        0x0
+                0x0000000000002100                _DataStart = .
+ *(.data)
+                0x0000000000002100                _DataEnd = .
+
+bss             0x0000000000002100     0x2850
+                0x0000000000002100                _BssStart = .
+ *(.bss)
+ .bss           0x0000000000002100      0x80c ../lib/libscreen.a(screen.o)
+                0x0000000000002904                back
+                0x0000000000002900                front
+                0x0000000000002100                parsebuffer
+                0x0000000000002908                count
+ .bss           0x000000000000290c     0x2030 ../lib/libtermio.a(termio.o)
+                0x0000000000004924                rcvfrontCOM1
+                0x000000000000491c                backCOM2
+                0x000000000000490c                frontCOM1
+                0x000000000000290c                bufferCOM1
+                0x000000000000492c                rcvcountCOM1
+                0x0000000000004920                countCOM2
+                0x0000000000004918                frontCOM2
+                0x0000000000004910                backCOM1
+                0x0000000000004938                rcvcountCOM2
+                0x0000000000004928                rcvbackCOM1
+                0x000000000000310c                bufferCOM2
+                0x000000000000410c                rcvbufCOM2
+                0x0000000000004914                countCOM1
+                0x000000000000390c                rcvbufCOM1
+                0x0000000000004930                rcvfrontCOM2
+                0x0000000000004934                rcvbackCOM2
+ .bss           0x000000000000493c       0x14 ../lib/libtimer.a(timer.o)
+                0x000000000000494c                now
+                0x000000000000493c                tsec
+                0x0000000000004948                last_time
+                0x0000000000004944                min
+                0x0000000000004940                sec
+                0x0000000000004950                _BssEnd = .
+
+text            0x0000000000004950     0x2a24
+ *(.text)
+ .text          0x0000000000004950       0x9c kernel.o
+                0x0000000000004950                main
+ .text          0x00000000000049ec      0xb74 ../lib/libscreen.a(screen.o)
+                0x0000000000005064                screenClearInputLine
+                0x0000000000005348                screenPrintClock
+                0x0000000000004acc                screenAdd
+                0x000000000000525c                screenParse
+                0x0000000000004be4                screenMenu
+                0x00000000000049ec                cleanbuffer
+                0x0000000000005528                screenQuit
+                0x000000000000512c                strcmp
+                0x0000000000004f78                screenUpdateHistory
+                0x0000000000004a8c                screenInit
+                0x000000000000543c                screenTrains
+ .text          0x0000000000005560      0x14c ../lib/libtrains.a(trains.o)
+                0x0000000000005560                trainsInit
+                0x0000000000005644                trainsSwitch
+                0x00000000000055ec                trainsReverse
+                0x0000000000005588                trainsSet
+ .text          0x00000000000056ac     0x13f0 ../lib/libtermio.a(termio.o)
+                0x00000000000061b0                termgetc
+                0x000000000000672c                termi2a
+                0x0000000000005fac                termputr
+                0x000000000000647c                terma2d
+                0x0000000000006790                termformat
+                0x0000000000005d4c                termputc
+                0x0000000000005c40                termsetspeed
+                0x0000000000005b78                termsetfifo
+                0x00000000000058b8                termatoi
+                0x0000000000005ecc                c2x
+                0x00000000000065e8                termui2a
+                0x00000000000060a8                termputw
+                0x00000000000059c8                termcheckandsend
+                0x000000000000602c                termputstr
+                0x00000000000056ac                terminit
+                0x0000000000006524                terma2i
+                0x0000000000005984                termflush
+                0x0000000000006a64                termprintf
+                0x0000000000005f2c                termputx
+ .text          0x0000000000006a9c      0x454 ../lib/libtimer.a(timer.o)
+                0x0000000000006b74                getTimer
+                0x0000000000006c14                initClock
+                0x0000000000006cc8                doClock
+                0x0000000000006a9c                setTimer
+ .text          0x0000000000006ef0      0x110 /u/wbcowan/gnuarm-4.0.2/lib/gcc/arm-elf/4.0.2/libgcc.a(_udivsi3.o)
+                0x0000000000006ef0                __udivsi3
+                0x0000000000006fe8                __aeabi_uidivmod
+ .text          0x0000000000007000       0xcc /u/wbcowan/gnuarm-4.0.2/lib/gcc/arm-elf/4.0.2/libgcc.a(_umodsi3.o)
+                0x0000000000007000                __umodsi3
+ .text          0x00000000000070cc        0x4 /u/wbcowan/gnuarm-4.0.2/lib/gcc/arm-elf/4.0.2/libgcc.a(_dvmd_tls.o)
+                0x00000000000070cc                __aeabi_ldiv0
+                0x00000000000070cc                __div0
+                0x00000000000070cc                __aeabi_idiv0
+ *(.got)
+ .got           0x00000000000070d0       0x64 ../lib/libscreen.a(screen.o)
+ *(.got.plt)
+ .got.plt       0x0000000000007134        0xc ../lib/libscreen.a(screen.o)
+                0x0000000000007134                _GLOBAL_OFFSET_TABLE_
+ *(.rodata)
+ .rodata        0x0000000000007140      0x1e4 ../lib/libscreen.a(screen.o)
+ .rodata        0x0000000000007324       0x50 ../lib/libtrains.a(trains.o)
+ *(.glue_7)
+ *(.glue_7t)
+
+.rel.dyn
+LOAD kernel.o
+LOAD ../lib/libscreen.a
+LOAD ../lib/libtrains.a
+LOAD ../lib/libtermio.a
+LOAD ../lib/libtimer.a
+LOAD /u/wbcowan/gnuarm-4.0.2/lib/gcc/arm-elf/4.0.2/libgcc.a
+OUTPUT(kernel.elf elf32-littlearm)
+
+.comment        0x0000000000000000       0x5a
+ .comment       0x0000000000000000       0x12 kernel.o
+ .comment       0x0000000000000012       0x12 ../lib/libscreen.a(screen.o)
+ .comment       0x0000000000000024       0x12 ../lib/libtrains.a(trains.o)
+ .comment       0x0000000000000036       0x12 ../lib/libtermio.a(termio.o)
+ .comment       0x0000000000000048       0x12 ../lib/libtimer.a(timer.o)
+
+.debug_line     0x0000000000000000      0x14f
+ .debug_line    0x0000000000000000       0x86 /u/wbcowan/gnuarm-4.0.2/lib/gcc/arm-elf/4.0.2/libgcc.a(_udivsi3.o)
+ .debug_line    0x0000000000000086       0x6f /u/wbcowan/gnuarm-4.0.2/lib/gcc/arm-elf/4.0.2/libgcc.a(_umodsi3.o)
+ .debug_line    0x00000000000000f5       0x5a /u/wbcowan/gnuarm-4.0.2/lib/gcc/arm-elf/4.0.2/libgcc.a(_dvmd_tls.o)
+
+.debug_info     0x0000000000000000      0x153
+ .debug_info    0x0000000000000000       0x71 /u/wbcowan/gnuarm-4.0.2/lib/gcc/arm-elf/4.0.2/libgcc.a(_udivsi3.o)
+ .debug_info    0x0000000000000071       0x71 /u/wbcowan/gnuarm-4.0.2/lib/gcc/arm-elf/4.0.2/libgcc.a(_umodsi3.o)
+ .debug_info    0x00000000000000e2       0x71 /u/wbcowan/gnuarm-4.0.2/lib/gcc/arm-elf/4.0.2/libgcc.a(_dvmd_tls.o)
+
+.debug_abbrev   0x0000000000000000       0x3c
+ .debug_abbrev  0x0000000000000000       0x14 /u/wbcowan/gnuarm-4.0.2/lib/gcc/arm-elf/4.0.2/libgcc.a(_udivsi3.o)
+ .debug_abbrev  0x0000000000000014       0x14 /u/wbcowan/gnuarm-4.0.2/lib/gcc/arm-elf/4.0.2/libgcc.a(_umodsi3.o)
+ .debug_abbrev  0x0000000000000028       0x14 /u/wbcowan/gnuarm-4.0.2/lib/gcc/arm-elf/4.0.2/libgcc.a(_dvmd_tls.o)
+
+.debug_aranges  0x0000000000000000       0x60
+ .debug_aranges
+                0x0000000000000000       0x20 /u/wbcowan/gnuarm-4.0.2/lib/gcc/arm-elf/4.0.2/libgcc.a(_udivsi3.o)
+ .debug_aranges
+                0x0000000000000020       0x20 /u/wbcowan/gnuarm-4.0.2/lib/gcc/arm-elf/4.0.2/libgcc.a(_umodsi3.o)
+ .debug_aranges
+                0x0000000000000040       0x20 /u/wbcowan/gnuarm-4.0.2/lib/gcc/arm-elf/4.0.2/libgcc.a(_dvmd_tls.o)
