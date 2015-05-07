@@ -1,6 +1,7 @@
 #include <screen.h>
 #include <termio.h>
 #include <trains.h>
+#include <string.h>
 
 char parsebuffer[BUFSIZ] = {'\0'};
 unsigned int front = 0, back = 0, count = 0;
@@ -82,41 +83,39 @@ void screenClearInputLine() {
     cleanbuffer();
 }
 
-
-int strcmp( const char* str1, const char* str2 ) { /* Needs to be null terminated */
-    int i = 0;
-    while(str1[i] != '\0' && str2[i] != '\0' && str1[i] == str2[i]) { i++; }
-    /* if str1[i] == str2[i], means they all equal to '\0' */
-    return (str1[i] == str2[i] ? 0 : (str1[i] > str2[i] ? 1 : -1));
-}
-
+// TODO: Need to correctly parse because otherwise console doesn't work properly
+// currently it is hardcoded to use the specific formats:
+//
+// 01234567 (hardcoded to use index)
+// tr nn ss
+// rv nn
+// sw nn d
+//
+// This will utterly break if the format is given incorrectly.
 void screenParse() {
     screenUpdateHistory();
     switch( parsebuffer[0] ) {
         case 't':
         if( parsebuffer[1] == 'r' ) {
-            // unsigned int train_num = 48;
-            // unsigned int train_speed = 30;
-            // trainsSet( train_num, train_speed );
-            trainsSet( 48, 30 );
+            unsigned int train_num = char2int(parsebuffer[3]) * 10 + char2int(parsebuffer[4]);
+            unsigned int train_speed = char2int(parsebuffer[6]) * 10 + char2int(parsebuffer[7]);
+            trainsSet( train_num, train_speed );
             break;
         }
         case 'r':
         if( parsebuffer[1] == 'v' ) {
-            // unsigned int train_num = 48;
-            // trainsReverse( train_num );
-            trainsReverse( 48 );
+            unsigned int train_num = char2int(parsebuffer[3]) * 10 + char2int(parsebuffer[4]);
+            trainsReverse( train_num );
             break;
         }
         case 's':
         if( parsebuffer[1] == 'w' ) {
-            // unsigned int switch_num = 9;
-            // char switch_direction = 'C';
-            // trainsSwitch( switch_num, switch_direction );
-            trainsSwitch( 9, 'C' );
+            unsigned int switch_num = char2int(parsebuffer[3]) * 10 + char2int(parsebuffer[4]);
+            char switch_direction = parsebuffer[6];
+            trainsSwitch( switch_num, switch_direction );
             break;
         }
-        default:  screenTrains( "Unknown command %s", parsebuffer );
+        default:  screenTrains( "Unknown command: %s", parsebuffer );
     }
     screenClearInputLine();
 }
