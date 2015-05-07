@@ -9,6 +9,6 @@
 void menuInit();
 void menuLine();
 void menuHistory();
-void menuParse( char c );
+void menuParse( char *buffer, char c );
 
 #endif // __MENU_H

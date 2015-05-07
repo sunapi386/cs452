@@ -5,13 +5,20 @@
 #include <menu.h>
 #include <trains.h>
 
+/* TODO: memcpy should be put somewhere more appropriate than in kernel */
+void memcpy( char *destaddr, char *srcaddr, int len ) {
+    while ( len-- ) *destaddr++ = *srcaddr++;
+}
+
 int main( int argc, char* argv[] ) {
     terminit();
     termsetfifo( COM2, OFF );
     termsetfifo( COM1, OFF );
     termsetspeed( COM1, 2400 );
     initClock();
-    menuInit();
+
+    char parsebuffer[BUFSIZ] = {'\0'}; /* buffer for storing and parsing user input */
+    menuInit(parsebuffer);
 
     int c;
 
@@ -19,35 +26,14 @@ int main( int argc, char* argv[] ) {
         doClock();
         termcheckandsend();
         if( (c = termgetc(COM2)) ) {
-            if( c == 'q' ) { break; }
-            if( c == 's' ) {
-                CLLINE;
-                POS( 10, 2 );
-                CLLINE;
-                PRINT( "start" );
-                POS( MENU_INPUT_ROW, MENU_INPUT_COL );
-                termprintf( COM1, "%c", 96 );
+            if( c == 'q' ) {
+                break;
             }
-            if( c == 't' ) {
-                CLLINE;
-                POS( 10, 2 );
-                CLLINE;
-                PRINT( "stop" );
-                POS( MENU_INPUT_ROW, MENU_INPUT_COL );
-                termprintf( COM1, "%c", 97 );
-            }
-            if( c == 'r' ) {
-                CLLINE;
-                POS( 10, 2 );
-                CLLINE;
-                PRINT( "reverse" );
-                POS( MENU_INPUT_ROW, MENU_INPUT_COL );
-                termprintf( COM1, "S50" );
-            }
-            menuParse( c );
-        }
+            menuParse( parsebuffer, c );
+        } // if
     }
 
+    CLS;
     termflush(); /* Do not print anything after this! */
     return 0;
 }
