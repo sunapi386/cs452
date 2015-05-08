@@ -1,28 +1,8 @@
 #include <menu.h>
-#include <termio.h>
 
 unsigned int front = 0; /* TODO: This global variable is probably bad */
 
-void cleanbuffer( char *buffer ) {
-	int i;
-	for( i = 0; i < BUFSIZ; ++i ) {
-	    buffer[i] = '\0';
-	}
-	front = 0;
-}
-
-void bufferAdd( char *buffer, char c ) {
-	if( front == BUFSIZ ) {
-		CLLINE;
-		PRINT( "Input buffer full!" );
-		cleanbuffer( buffer );
-	}
-	buffer[front] = c;
-	front++;
-}
-
-void menuInit( char *buffer ) {
-	cleanbuffer( buffer );
+void menuDraw() {
 	CLS;	/* Clear screen */
 	POS( MENU_ROW, MENU_COL ); /* Position cursor */
 	PRINT( "****************************" ); /* Note there is no \n */
@@ -38,32 +18,72 @@ void menuInit( char *buffer ) {
 	PRINT( "4/ q");
 	POS( MENU_ROW + 6, MENU_COL ); /* Next line */
 	PRINT("****************************");
-	POS( MENU_ROW + 7, MENU_COL ); /* Next line */
+	POS( MENU_INPUT_ROW, MENU_INPUT_COL ); /* Park the cursor */
 }
 
 /* Moves cursor to line 4 and prints a prompt */
-void menuLine() {
+static void menuLine() {
 	POS( MENU_INPUT_ROW, MENU_INPUT_COL ); /* Park the cursor */
 	CLLINE;
 	POS( MENU_INPUT_ROW, MENU_INPUT_COL ); /* Park the cursor */
 }
 
-void menuHistory( char *buffer ) {
+static void menuHistory( char *buffer ) {
+	CLLINE;
 	POS( MENU_INPUT_ROW - 1, 0 );
-	PRINT( "=> %s", buffer );
+	CLLINE;
+	PRINT( "%80s", buffer ); /* %80s prevent buffer overflow */
 }
 
-void menuParse( char *buffer, char c ) {
-	if( c == '\r' ) { /* If the enter key was pressed, we figure out what is in the buffer */
-		CLLINE;
-		POS( MENU_INPUT_ROW - 1, 0 );
-		CLLINE;
-		PRINT( "%s", buffer ); /* TODO: Actually tokenize the buffer, for now just print it */
-		cleanbuffer( buffer );
-		POS( MENU_INPUT_ROW, MENU_INPUT_COL ); /* Park the cursor */
-	}
+static void menuHistory3( buffer_t *b1, buffer_t *b2, buffer_t *b3 ) {
+	CLLINE;
+	POS( MENU_INPUT_ROW - 1, 0 );
+	CLLINE;
+	PRINT( "[%s:%s:%s]", b1->elements, b2->elements, b3->elements ); /* %80s prevent buffer overflow */
+}
 
-	PRINT( "%c", c );
-	bufferAdd( buffer, c );
+// void menuParse( char *buffer, char c ) {
+// 	/* This function is called because the enter key was pressed; we parse the buffer */
+// 	menuHistory( buffer );
+// 	/* Here we need to parse the buffer */
+// 	if( buffer[0] == 't' && buffer[1] == 'r' ) {
+// 		int train_number, train_speed;
+// 		/* Handles tr train_number train_speed */
+// 	    CLLINE;
+// 	    POS( MENU_INPUT_ROW - 1, MENU_INPUT_COL );
+// 	    CLLINE;
+// 	    PRINT( "tr %d %d", train_number, train_speed );
+// 	    POS( MENU_INPUT_ROW, MENU_INPUT_COL );
+// 	    termprintf( COM1, "%c", 97 );
+// 	}
+// 	else
+// 	if( buffer[0] == 'r' && buffer[1] == 'v' ) {
+// 		int train_number;
+// 		/* Handles rv train_number */
+// 	    CLLINE;
+// 	    POS( MENU_INPUT_ROW - 1, MENU_INPUT_COL );
+// 	    CLLINE;
+// 	    PRINT( "rv %d", train_number );
+// 	    POS( MENU_INPUT_ROW, MENU_INPUT_COL );
+// 	    termprintf( COM1, "S50" );
+// 	}
+// 	else
+// 	if( buffer[0] == 's' && buffer[1] == 'w' ) {
+// 		int switch_number, switch_direction;
+// 		/* Handles sw switch_number switch_direction */
+// 		// a2i( , &buffer );
+// 	    CLLINE;
+// 	    POS( MENU_INPUT_ROW - 1, MENU_INPUT_COL );
+// 	    CLLINE;
+// 	    PRINT( "sw %d %c", switch_number, switch_direction );
+// 	    POS( MENU_INPUT_ROW, MENU_INPUT_COL );
+// 	    termprintf( COM1, "%c", 96 );
+// 	}
+// 	POS( MENU_INPUT_ROW, MENU_INPUT_COL ); /* Park the cursor */
+// }
+
+void menuInput( buffer_t *b1, buffer_t *b2, buffer_t *b3 ) {
+	menuHistory3( b1, b2, b3 );
+	POS( MENU_INPUT_ROW, MENU_INPUT_COL ); /* Park the cursor */
 }
 
