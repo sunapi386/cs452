@@ -3,7 +3,7 @@
 #include <termio.h>
 /* Timer functions. See Cirrus Logic page 427 for timers register map */
 
-unsigned int tsec = 0, sec = 0, min = 0, last_time = 0, now = 0;
+unsigned int tsec = 0, sec = 0, min = 0, last_time = 0, now = 0, clock_called = 0;
 
 /* Sets the timer to desired value */
 int setTimer( int timer, int desired ) {
@@ -38,14 +38,16 @@ int initClock() {
 }
 
 /* Get clock time */
-int doClock() {
+unsigned int doClock() {
+    clock_called += 1;
 	now = getTimer(3) / 200;
     if( now != last_time ) {
         last_time = now;
         tsec += 1;
         SAVECURSOR;
 	    PRINT( "%c[%d;%dH", 27, 0, 0 ); /* Print in corner 0, 0 */
-	    PRINT( "%u:%u.%u", min, sec % 60, tsec % 10 );
+	    PRINT( "%u:%u.%u|%u", min, sec % 60, tsec % 10, clock_called );
+        clock_called = 0;
 	    LOADCURSOR;
         if( tsec % 10 == 0 ) {
             sec += 1;
@@ -54,5 +56,5 @@ int doClock() {
             }
         }
     }
-    return 0;
+    return clock_called;
 }

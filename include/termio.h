@@ -5,7 +5,7 @@
  */
 
 
-#define BUFSIZ 		1024
+#define BUFSIZ 		128
 #define ESC         27
 #define CLS             termprintf( COM2, "%c[2J", ESC )
 #define CLLINE			termprintf( COM2, "%c[2K", ESC )

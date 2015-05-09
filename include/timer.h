@@ -30,5 +30,5 @@ int getTimer( int timer );
 int initClock();
 
 /* Get clock time */
-int doClock();
+unsigned int doClock();
 #endif // __TIMER_H

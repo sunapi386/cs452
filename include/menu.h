@@ -8,6 +8,7 @@
 #define MENU_INPUT_COL 0
 
 void menuDraw();
+void menuLine();
 // void menuParse( char *buffer, char c );
 void menuInput( buffer_t *b1, buffer_t *b2, buffer_t *b3 );
 

@@ -6,11 +6,12 @@
 #include <trains.h>
 
 /* TODO: memcpy should be put somewhere more appropriate than in kernel */
-static inline void memcpy( char *destaddr, char *srcaddr, int len ) {
-    while ( len-- ) *destaddr++ = *srcaddr++;
-}
+// static inline void memcpy( char *destaddr, char *srcaddr, int len ) {
+//     while ( len-- ) *destaddr++ = *srcaddr++;
+// }
 
 int main( int argc, char* argv[] ) {
+    termsetspeed( COM1, 2400 );
     terminit();
     /* COM1
         Baud rate = 2400
@@ -19,19 +20,13 @@ int main( int argc, char* argv[] ) {
         Parity = None
         Word size = 8 bits
     */
-    termsetspeed( COM1, 2400 );
-    termsetfifo( COM1, OFF );
 
     /* COM2 */
     termsetfifo( COM2, OFF );
     initClock();
     menuDraw();
     trainsInit();
-
-    // char buffer[BUFSIZ] = {'\0'}; /* buffer for storing and parsing user input */
-    // char instruction1[BUFSIZ] = {'\0'};  buffer for instr 1
-    // char instruction2[BUFSIZ] = {'\0'}; /* buffer for 2 */
-    // char instruction3[BUFSIZ] = {'\0'}; /* buffer for 3 */
+    termsetfifo( COM1, OFF );
 
     buffer_t buffer0, buffer1, buffer2, buffer3; /* buffer 0 used for entry, 1 2 3 for cmds */
     BufferEmpty(&buffer0);
@@ -40,9 +35,11 @@ int main( int argc, char* argv[] ) {
     BufferEmpty(&buffer3);
     int spaces = 0;  /* Track number of spaces pressed */
     int c;
+    trainsSensorPoll();
 
     for( ;; ) {
         doClock();
+
         termcheckandsend();
         if( (c = termgetc(COM2)) ) { /* If there is input */
             if( c == 'q' ) { break; } /* For some reason this quit can only go here */
@@ -53,18 +50,27 @@ int main( int argc, char* argv[] ) {
                 menuInput( &buffer1, &buffer2, &buffer3 );
                 spaces = 0;
                 BufferEmpty( &buffer0 ); BufferEmpty( &buffer1 ); BufferEmpty( &buffer2 ); BufferEmpty( &buffer3 );
+            } else if ( c == '\b' ) { /* TODO: User pressed backspace */
+                if( buffer0.count > 0 ) {
+                    BufferBackspace( &buffer0 );
+                    menuLine();
+                    PRINT( "%s", buffer0.elements );
+                }
             } else if( c == ' ' ) { /* User pressed space */
                 PRINT( "%c", c ); /* Display user's input */
                 if( spaces == 0 ) { BufferCopy( &buffer0, &buffer1 ); BufferEmpty( &buffer0 ); }
                 if( spaces == 1 ) { BufferCopy( &buffer0, &buffer2 ); BufferEmpty( &buffer0 ); }
                 if( spaces == 2 ) { BufferCopy( &buffer0, &buffer3 ); BufferEmpty( &buffer0 ); }
                 spaces++;
-            } else if ( c == '\b' ) { /* TODO: User pressed backspace */
-            } else { /* User pressed a character */
+            }  else { /* User pressed a character */
                 PRINT( "%c", c ); /* Display user's input */
                 BufferInsert( &buffer0, c );
             }
         } // if
+
+        // if( t == 0 ) {
+            // trainsSensorPoll();
+        // }
     }
     trainsQuit();
     CLS;

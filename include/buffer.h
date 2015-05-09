@@ -1,4 +1,4 @@
-#define BUFFERSIZE 1024
+#define BUFFERSIZE 64
 typedef struct Buffer {
     int count;
     char elements[BUFFERSIZE]; /* slightly larger buffer */

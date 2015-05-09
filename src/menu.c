@@ -23,7 +23,7 @@ void menuDraw() {
 }
 
 /* Moves cursor to line 4 and prints a prompt */
-static void menuLine() {
+void menuLine() {
 	POS( MENU_INPUT_ROW, MENU_INPUT_COL ); /* Park the cursor */
 	CLLINE;
 	POS( MENU_INPUT_ROW, MENU_INPUT_COL ); /* Park the cursor */
