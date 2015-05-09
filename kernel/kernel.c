@@ -12,11 +12,21 @@ static inline void memcpy( char *destaddr, char *srcaddr, int len ) {
 
 int main( int argc, char* argv[] ) {
     terminit();
-    termsetfifo( COM2, OFF );
-    termsetfifo( COM1, OFF );
+    /* COM1
+        Baud rate = 2400
+        Start bits (if requested by computer) = 1
+        Stop bits = 2
+        Parity = None
+        Word size = 8 bits
+    */
     termsetspeed( COM1, 2400 );
+    termsetfifo( COM1, OFF );
+
+    /* COM2 */
+    termsetfifo( COM2, OFF );
     initClock();
     menuDraw();
+    trainsInit();
 
     // char buffer[BUFSIZ] = {'\0'}; /* buffer for storing and parsing user input */
     // char instruction1[BUFSIZ] = {'\0'};  buffer for instr 1
@@ -24,7 +34,10 @@ int main( int argc, char* argv[] ) {
     // char instruction3[BUFSIZ] = {'\0'}; /* buffer for 3 */
 
     buffer_t buffer0, buffer1, buffer2, buffer3; /* buffer 0 used for entry, 1 2 3 for cmds */
-    BufferEmpty(buffer0); BufferEmpty(buffer1); BufferEmpty(buffer2); BufferEmpty(buffer3);
+    BufferEmpty(&buffer0);
+    BufferEmpty(&buffer1);
+    BufferEmpty(&buffer2);
+    BufferEmpty(&buffer3);
     int spaces = 0;  /* Track number of spaces pressed */
     int c;
 
@@ -53,7 +66,7 @@ int main( int argc, char* argv[] ) {
             }
         } // if
     }
-
+    trainsQuit();
     CLS;
     termflush(); /* Do not print anything after this! */
     return 0;
