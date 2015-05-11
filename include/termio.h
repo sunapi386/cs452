@@ -46,7 +46,7 @@ int termsetspeed( int channel, int speed );
 
 int termputc( int channel, char c );
 
-int termgetc( int channel );
+int termgetc( int channel, char *ch );
 
 int termputx( int channel, char c );
 

@@ -3,7 +3,7 @@
 #include <bool.h>
 char switches[TRAIN_NUM_SWITCHES] = {'\0'};
 char sensors[TRAIN_NUM_SENSORS] = {'\0'};
-unsigned current_sensor_idx = 0, sensor_poll_time = 0;
+unsigned sensors_polled = 0;
 bool polling = false, switch_changed = true;
 
 static inline void trainsSwitchInit() { /* Hardcoded */
@@ -38,8 +38,7 @@ static inline void trainsSensorInit() {
 }
 
 void trainsInit() {
-    current_sensor_idx = 0;
-    sensor_poll_time = 0;
+    sensors_polled = 0;
     polling = false;
     TRAIN_SEND( "%c", TRAIN_GO );
     trainsSwitchInit();
@@ -105,6 +104,7 @@ static inline bool charbitAt( char c, int idx ) {
 }
 
 static inline void drawSensors() {
+    SAVECURSOR;
     int group_id, sensor_id;
     POS( TRAIN_SENSOR_STATUS_ROW, TRAIN_SENSOR_STATUS_COL );
     for( group_id = 0; group_id < TRAIN_NUM_SENSORS; group_id++ ) {  /* Groups A, B, C, D, E */
@@ -112,31 +112,28 @@ static inline void drawSensors() {
             // bool status = charbitAt( sensors[group_id], sensor_id );
             // PRINT( "[%c%d %d]", (char)('A' + group_id), sensor_id, (int)status );
         // }
-        PRINT( "%c,%c ", (char)('A' + group_id), sensors[group_id] );
+        PRINT( "%c,0x%x ", (char)('A' + group_id), sensors[group_id] );
     }
-
+    LOADCURSOR;
 }
 
 void trainsPollSensor() { // Polls until 10 bytes are available and then restarts
-    sensor_poll_time++;
-    if( sensor_poll_time > 8000 ) {
-        drawSensors();
-    }
-
-    if( ! polling ) {
+    if( ! polling ) { // don't poll too fast to avoid overflowing char writes
         TRAIN_SEND( "%c", 128 + 5 ); // request all sensors
         polling = true;
+        sensors_polled = 0;
     }
     else {
-        char c = TRAIN_GETC;
-        sensors[current_sensor_idx] = c;
-        current_sensor_idx++;
-        if( current_sensor_idx == 10 ) {
-            current_sensor_idx = 0;
-            polling = false;
-
+        int c;
+        if ( termgetc( COM1, &c ) ) {
+            sensors_polled++;
+            sensors[sensors_polled] = (char)c; // really we read a char
+            if( sensors_polled == 10 ) {
+                sensors_polled = 0;
+                polling = false;
+                drawSensors();
+            }
         }
-            // current_sensor_idx = (current_sensor_idx + 1) % TRAIN_NUM_SENSORS;
     }
 }
 

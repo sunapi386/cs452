@@ -204,13 +204,13 @@ void termputw( int channel, int n, char fc, char *bf ) {
 	while( ( ch = *bf++ ) ) termputc( channel, ch );
 }
 
-int termgetc( int channel ) { /* This still does busy-waiting! */
+int termgetc( int channel, char *ch ) { /* This still does busy-waiting! */
 	int *flags, *data;
 	int ret = 0;
 	if( rcvcountCOM1 < BUFSIZ ) {
 		flags = (int *)( UART1_BASE + UART_FLAG_OFFSET );
-		data = (int *)( UART1_BASE + UART_DATA_OFFSET );
 		if( (*flags & RXFF_MASK) ) {
+			data = (int *)( UART1_BASE + UART_DATA_OFFSET );
 			rcvbufCOM1[rcvbackCOM1] = *data;
 			rcvbackCOM1 = (rcvbackCOM1 + 1) % BUFSIZ;
 			rcvcountCOM1 += 1;
@@ -218,8 +218,8 @@ int termgetc( int channel ) { /* This still does busy-waiting! */
 	}
 	if( rcvcountCOM2 < BUFSIZ ) {
 		flags = (int *)( UART2_BASE + UART_FLAG_OFFSET );
-		data = (int *)( UART2_BASE + UART_DATA_OFFSET );
 		if( (*flags & RXFF_MASK) ) {
+			data = (int *)( UART2_BASE + UART_DATA_OFFSET );
 			rcvbufCOM2[rcvbackCOM2] = *data;
 			rcvbackCOM2 = (rcvbackCOM2 + 1) % BUFSIZ;
 			rcvcountCOM2 += 1;
@@ -228,16 +228,18 @@ int termgetc( int channel ) { /* This still does busy-waiting! */
 	switch( channel ) {
 	case COM1:
 		if( rcvcountCOM1 > 0 ) {
-			ret = rcvbufCOM1[rcvfrontCOM1];
+			*ch = rcvbufCOM1[rcvfrontCOM1];
 			rcvfrontCOM1 = (rcvfrontCOM1 + 1) % BUFSIZ;
 			rcvcountCOM1 -= 1;
+			ret = 1;
 		}
 		break;
 	case COM2:
 		if( rcvcountCOM2 > 0 ) {
-			ret = rcvbufCOM2[rcvfrontCOM2];
+			*ch = rcvbufCOM2[rcvfrontCOM2];
 			rcvfrontCOM2 = (rcvfrontCOM2 + 1) % BUFSIZ;
 			rcvcountCOM2 -= 1;
+			ret = 1;
 		}
 		break;
 	}

@@ -31,10 +31,10 @@ int main( int argc, char* argv[] ) {
     for( ;; ) {
         doClock();
         trainsPollSwitches();
-        // trainsPollSensor();
+        trainsPollSensor();
 
         termcheckandsend();
-        if( (c = termgetc(COM2)) ) { /* If there is input */
+        if( termgetc(COM2, &c) ) { /* If there is input */
             // if( c == 'q' ) { break; } /* For some reason this quit can only go here */
             if( c == '\r' ) { /* User pressed enter */
                 if( buffer0.elements[0] == 'q' ) { break; }

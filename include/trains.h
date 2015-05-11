@@ -9,7 +9,6 @@
     /* Serial communication */
 #define TRAIN_COMSPEED  2400
 #define TRAIN_SEND( ... )   termprintf( COM1, __VA_ARGS__ )
-#define TRAIN_GETC          termgetc( COM1 )
 
 #define TRAIN_GO        96
 #define TRAIN_STOP      97
@@ -17,7 +16,7 @@
 
     /* Switching */
 #define TRAIN_NUM_SWITCHES   0x9d
-#define TRAIN_NUM_SENSORS 12 // Modules A, B, C, D, E
+#define TRAIN_NUM_SENSORS 10 // Modules A, B, C, D, E
 #define TRAIN_SOLENOID_OFF TRAIN_SEND( "%c", 32 )
 /* If a number of turnouts are called in sequence, then each command will automatically
 * turn off the turnout called previously, which means that only the last one needs to be turned off.
