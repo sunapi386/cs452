@@ -35,8 +35,9 @@ int main( int argc, char* argv[] ) {
 
         termcheckandsend();
         if( (c = termgetc(COM2)) ) { /* If there is input */
-            if( c == 'q' ) { break; } /* For some reason this quit can only go here */
+            // if( c == 'q' ) { break; } /* For some reason this quit can only go here */
             if( c == '\r' ) { /* User pressed enter */
+                if( buffer0.elements[0] == 'q' ) { break; }
                 if( spaces == 0 ) { BufferCopy( &buffer0, &buffer1 ); BufferEmpty( &buffer0 ); }
                 if( spaces == 1 ) { BufferCopy( &buffer0, &buffer2 ); BufferEmpty( &buffer0 ); }
                 if( spaces == 2 ) { BufferCopy( &buffer0, &buffer3 ); BufferEmpty( &buffer0 ); }
