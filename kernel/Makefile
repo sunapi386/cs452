@@ -20,7 +20,7 @@ LDFLAGS = -init main -Map kernel.map -N  -T orex.ld -L/u/wbcowan/gnuarm-4.0.2/li
 LIBS = -lmenu -ltrains -ltermio -ltimer -lgcc
 
 all:  kernel.s kernel.elf
-	cp kernel.elf /u/cs452/tftp/ARM/j53sun
+	cp control.elf /u/cs452/tftp/ARM/j53sun
 
 kernel.s: kernel.c kernel.h
 	$(XCC) -S $(CFLAGS) kernel.c
