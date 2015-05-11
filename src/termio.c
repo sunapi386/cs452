@@ -7,6 +7,7 @@
 
 #include <ts7200.h>
 #include <termio.h>
+#include <circ_buffer.h>
 
 /*
  * The UARTs are initialized by RedBoot to the following state
@@ -20,6 +21,7 @@
 /* Buffer for receiving from COM1 and COM2 */
 /* Necessary to init to 0 because we don't have .bss segment setup. Otherwise this happens: */
 /* ld: error: no memory region specified for loadable section `.bss' */
+// circ_buffer_t bufferCOM1, bufferCOM2, rcvbufCOM1, rcvbufCOM2;
 char bufferCOM1[BUFSIZ] = {'\0'}, bufferCOM2[BUFSIZ] = {'\0'};
 char rcvbufCOM1[BUFSIZ] = {'\0'}, rcvbufCOM2[BUFSIZ] = {'\0'};
 unsigned int frontCOM1 = 0, backCOM1 = 0, countCOM1 = 0;
@@ -38,18 +40,17 @@ void terminit() { /* Necessary. Depending on compiler is unreliable shit! */
 	rcvfrontCOM1 = rcvbackCOM1 = rcvcountCOM1 = 0;
 	rcvfrontCOM2 = rcvbackCOM2 = rcvcountCOM2 = 0;
 	com1_last_sent_time = com2_last_sent_time = 0; // first I want to time how fast this goes for, per second.
+	// CB_Clean( &frontCOM1 );
+	// CB_Clean( &frontCOM2 );
+	// CB_Clean( &rcvbufCOM1 );
+	// CB_Clean( &rcvbufCOM2 );
 }
 
 void termflush() {
-	// SAVECURSOR;
-	POS( STATUS_X, STATUS_Y );
-	CLLINE;
-	PRINT( "Goodbye!" );
-	// LOADCURSOR;
 	int max;
-	max = 20000;
+	max = BUFSIZ;
 	while( termcheckandsend() ) {
-		max--;
+		max--; // not putting this here causes it to hang on exit, unknown reason
 		if( max == 0 ) { break; }
 	}
 	/* Don't print anything after while loop */
@@ -66,19 +67,19 @@ int termcheckandsend() {
     int *flags, *data;
     int ret = 0;
     /* Experimental flow control of > 900, because ~1500 loops per second */
-    if( countCOM1 > 0 && com1_last_sent_time > 500 ) {
+    if( countCOM1 > 0 && com1_last_sent_time > 900 ) {
         flags = (int *)( UART1_BASE + UART_FLAG_OFFSET );
         if( ! ( *flags & TXFF_MASK ) && (*flags & CTS_MASK) && ! (*flags & TXBUSY_MASK) ) {
 	        data = (int *)( UART1_BASE + UART_DATA_OFFSET );
             *data = (char)(bufferCOM1[frontCOM1]);
             frontCOM1 = (frontCOM1 + 1) % BUFSIZ;
             countCOM1 -= 1;
-            termprintf( COM2, "com1_last_sent_time: %u", com1_last_sent_time );
+            // termprintf( COM2, "com1_last_sent_time: %u", com1_last_sent_time );
             com1_last_sent_time = 0;
 	        ret = 1;
         }
     }
-    if( countCOM2 > 0 && com2_last_sent_time > 5 ) {
+    if( countCOM2 > 0 && com2_last_sent_time > 10 ) {
         flags = (int *)( UART2_BASE + UART_FLAG_OFFSET );
         if( ! ( *flags & TXFF_MASK ) ) {
 	        data = (int *)( UART2_BASE + UART_DATA_OFFSET );

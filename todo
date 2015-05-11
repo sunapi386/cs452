@@ -1,0 +1,15 @@
+
+TODO
+Track detection modules
+Buffer correctly
+Why does program sometimes run
+Why does program hang when quitting
+
+CHECK
+Validate commands
+
+DONE
+Make sure checking CTS or RTS bit where appropriate.
+Add delay between commands that need to be sent.
+
+

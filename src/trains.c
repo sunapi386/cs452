@@ -17,8 +17,6 @@ void trainsInit() {
     for( i = 0; i < TRAIN_SENSOR_BUFSIZ + 1; ++i ) {
         sensorbuf[i] = '.';
     }
-    /* Hardcoding happens below. I read specific addresses. */
-    TRAIN_SEND( "%c", 192 ); // reset memory
 }
 
 void trainsQuit() {
@@ -26,7 +24,8 @@ void trainsQuit() {
 }
 
 void trainsSet( unsigned int train_num, unsigned int train_speed ) {
-    TRAIN_SEND( "%c%c", train_speed, train_num );
+    // TRAIN_SEND( "%c%c", train_speed, train_num );
+    termprintf( COM1, "%c%c", (char)train_speed, (char)train_num );
 }
 
 void trainsReverse( unsigned int train_num ) {
@@ -38,16 +37,16 @@ void trainsSwitch( unsigned int switch_num, char switch_direction ) {
     char direction;
     if( switch_direction == 'S' || switch_direction == 's' ) {
         direction = TRAIN_SWITCH_STRAIGHT;
-        PRINT( "Switch %u direction S", switch_num, direction );
+        // PRINT( "Switch %u direction S", switch_num, direction );
     }
     else if( switch_direction == 'C' || switch_direction == 'c' ) {
         direction = TRAIN_SWITCH_CURVED;
-        PRINT( "Switch %u direction C", switch_num, direction );
+        // PRINT( "Switch %u direction C", switch_num, direction );
     }
     else {
     }
     TRAIN_SEND( "%c%c", direction, switch_num );
-    PRINT( "Switch %u direction %u", switch_num, direction );
+    // PRINT( "Switch %u direction %u", switch_num, direction );
     TRAIN_SOLENOID_OFF;
 }
 
@@ -59,6 +58,8 @@ void trainsSwitch( unsigned int switch_num, char switch_direction ) {
 *   the option is get all sensors to dump memor up to a specific unit.
 *  The trains lab has 5 modules.
 *  The program needs to receive this data.
+    TRAIN_SEND( "%c", 192 ); // reset memory
+
 */
 void trainsSensorPoll() { // Polls until 10 bytes are available and then restarts
     if( ! pollbusy && sensorcount == TRAIN_SENSOR_BUFSIZ + 1 ) {
@@ -95,20 +96,23 @@ void trainsSensorPoll() { // Polls until 10 bytes are available and then restart
 }
 
 void trainsSwitchInit() { /* Hardcoded */
-    unsigned int sw;
-    char dir = 'C';
-    for( sw = 0; sw < 19; ++sw ) {
-        TRAIN_SEND( "%c%c", dir, sw );
-        PRINT( "Switch %u dir %c", sw, dir );
+    unsigned int i;
+    for( i = 0; i < 19; ++i ) {
+        trainsSwitch( i, 'S' );
+    }
+    for( i = 0; i < 19; ++i ) {
+        trainsSwitch( i, 'C' );
     }
     /* Special handling of middle tracks to avoid CC position */
+
     // TRAIN_SEND( "%c%c", 0x99, dir );
-    // PRINT( "Switch %u dir %c", switch_num, dir );
-    // TRAIN_SEND( "%c%c", 0x9a, dir );
-    // PRINT( "Switch %u dir %c", switch_num, dir );
-    // TRAIN_SEND( "%c%c", 0x9b, dir );
-    // PRINT( "Switch %u dir %c", switch_num, dir );
+    // PRINT( "Switch %x dir %c", 0x99, dir );
     // TRAIN_SEND( "%c%c", 0x9c, dir );
-    // PRINT( "Switch %u dir %c", switch_num, dir );
+    // PRINT( "Switch %x dir %c", 0x9c, dir );
+    // dir = 'S';
+    // TRAIN_SEND( "%c%c", 0x9a, dir );
+    // PRINT( "Switch %x dir %c", 0x9a, dir );
+    // TRAIN_SEND( "%c%c", 0x9b, dir );
+    // PRINT( "Switch %x dir %c", 0x9b, dir );
     TRAIN_SOLENOID_OFF;
 }

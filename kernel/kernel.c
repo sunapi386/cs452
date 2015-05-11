@@ -18,7 +18,8 @@ int main( int argc, char* argv[] ) {
     termsetfifo( COM1, OFF );
     termsetfifo( COM2, OFF );
     menuDraw();
-    // trainsInit();
+    trainsInit();
+    trainsSwitchInit();
 
     buffer_t buffer0, buffer1, buffer2, buffer3; /* buffer 0 used for entry, 1 2 3 for cmds */
     BufferEmpty(&buffer0);
@@ -64,7 +65,7 @@ int main( int argc, char* argv[] ) {
             // trainsSensorPoll();
         // }
     }
-    // trainsQuit();
+    trainsQuit();
     // termcheckandsend();
     termflush(); /* Do not print anything after this! */
     return 0;

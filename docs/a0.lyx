@@ -1,0 +1,255 @@
+#LyX 2.1 created this file. For more info see http://www.lyx.org/
+\lyxformat 474
+\begin_document
+\begin_header
+\textclass article
+\use_default_options true
+\maintain_unincluded_children false
+\language english
+\language_package default
+\inputencoding auto
+\fontencoding global
+\font_roman default
+\font_sans default
+\font_typewriter default
+\font_math auto
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100
+\font_tt_scale 100
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize default
+\use_hyperref false
+\papersize default
+\use_geometry false
+\use_package amsmath 1
+\use_package amssymb 1
+\use_package cancel 1
+\use_package esint 1
+\use_package mathdots 1
+\use_package mathtools 1
+\use_package mhchem 1
+\use_package stackrel 1
+\use_package stmaryrd 1
+\use_package undertilde 1
+\cite_engine basic
+\cite_engine_type default
+\biblio_style plain
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\justification true
+\use_refstyle 1
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\quotes_language english
+\papercolumns 1
+\papersides 1
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Title
+CS452 A0 Documentation
+\end_layout
+
+\begin_layout Author
+Jason Sun 20387090
+\end_layout
+
+\begin_layout Section
+Program operation
+\end_layout
+
+\begin_layout Standard
+To operate the program, first load the executable in redboot and execute
+ it: 
+\end_layout
+
+\begin_layout Verbatim
+
+load -b 0x0021800 -h 10.15.167.5 /u/cs452/tftp/ARM/j53sun/kernel.elf
+\end_layout
+
+\begin_layout Verbatim
+
+go
+\end_layout
+
+\begin_layout Standard
+Valid commands are:
+\end_layout
+
+\begin_layout Verbatim
+tr train_number train_speed
+\end_layout
+
+\begin_layout Verbatim
+rv train_number
+\end_layout
+
+\begin_layout Verbatim
+sw switch_number switch_direction
+\end_layout
+
+\begin_layout Section
+Program structure
+\end_layout
+
+\begin_layout Standard
+Each pass of the polling loop:
+\end_layout
+
+\begin_layout Itemize
+Checks the clock.
+ It uses the 32 bit timer (timer 3).
+ Every tenth of a second the clock is redrawn.
+ The polling loop runs about 1600 times per tenth second under no load,
+ and about 1500 times when holding down carriage return.
+\end_layout
+
+\begin_layout Itemize
+Polls the train sensors for changes (incomplete functionality).
+ Sends a new sensor data request when all data bytes from previous sensor
+ data request have been received.
+ The data is then put into a buffer, which is allocated on the stack.
+\end_layout
+
+\begin_layout Itemize
+Checks the send buffer.
+ Sends a character from the send buffer, if there are items in the buffer
+ and it timing delay has been reached.
+ Two different timing delays exist: 
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+One for the display terminal (115200 baud).
+ A delay of 10 loops are used.
+ The ARM process operates at 200Mhz, and the serial is 115Khz.
+ 115/200,000=0.000575 bit over terminal per instruction, so 0.005 instruction
+ per tenth second.
+ Using 1500 loops per tenth second, 0.005 * 1500 = 7.5 CPU cycles as lower
+ bound.
+ 
+\end_layout
+
+\begin_layout Itemize
+One for the train controller (2400 baud).
+ A delay of 1500 loops (roughly 0.1s) are used to make sure the train controller
+ isn't overwhelmed with commands.
+ 115200 / 2400 = 48 times slower, we should send no more than 48 commands
+ per second.
+ 1 / 48 = 0.02 and so waiting 5x longer should be enough.
+\end_layout
+
+\end_deeper
+\begin_layout Itemize
+Checks the receive buffer.
+ If character is received, it is printed to terminal.
+ User input is sent to be parsed if the user presses carriage return.
+ Parsing validates the commands before filling the buffer to train with
+ commands.
+\end_layout
+
+\begin_layout Subsection
+Known bugs
+\end_layout
+
+\begin_layout Itemize
+Backspace glitches when space is pressed and the user attempts to backspace
+ the space.
+ The way the input buffer is written is it simply tokenizes user's input
+ based on spaces pressed.
+ 
+\end_layout
+
+\begin_layout Itemize
+Pressing 'q' terminates program immediately.
+\end_layout
+
+\begin_layout Itemize
+Once program terminates, 
+\begin_inset Quotes eld
+\end_inset
+
+go
+\begin_inset Quotes erd
+\end_inset
+
+ command relaunches with significant delay.
+ And terminating that causes screen to be filled with bad characters.
+ This is probably caused by use of global variables (bad), but time ran
+ out for a refactor fix.
+\end_layout
+
+\begin_deeper
+\begin_layout Itemize
+In attempt to fix this, remapped the memory space usage in the orex.ld file
+ to move the program start space to 0x00218000, and text data ahead of data
+ and bss.
+ Does not seem to solve problem.
+\end_layout
+
+\end_deeper
+\begin_layout Section
+Source code location and md5 hashes
+\end_layout
+
+\begin_layout Standard
+..
+ to be done.
+\end_layout
+
+\begin_layout Section
+List of all files submitted
+\end_layout
+
+\begin_layout Standard
+...
+ To be done.
+\end_layout
+
+\begin_layout Section
+Question answers
+\end_layout
+
+\begin_layout Subsection
+Clock timing
+\end_layout
+
+\begin_layout Standard
+Clock does not miss updates or lose time because the clock is updated every
+ tenth of a second, and that gives the CPU about 1500 polling loop iterations.
+ 
+\end_layout
+
+\begin_layout Subsection
+Hardware to reply to a sensor query
+\end_layout
+
+\begin_layout Standard
+To be documented.
+\end_layout
+
+\end_body
+\end_document
