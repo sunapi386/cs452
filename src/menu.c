@@ -134,7 +134,7 @@ void menuInput( buffer_t *b1, buffer_t *b2, buffer_t *b3 ) {
 	}
 	else
 	if( b1->elements[0] == 's' && b1->elements[1] == 'w'
-			&& (i2 > 0 && i2 < 99)
+			&& ( (i2 > 0 && i2 < 99) || i2 == 153 || i2 == 154 || i2 == 155 || i2 == 156 )
 			&& (b3->elements[0] == 'c' || b3->elements[0] == 'C' || b3->elements[0] == 's' || b3->elements[0] == 'S' ) ) {
 		int switch_number;
 		char switch_direction;
