@@ -55,7 +55,6 @@ static void menuHistory3( buffer_t *b1, buffer_t *b2, buffer_t *b3 ) {
 // 	    CLLINE;
 // 	    PRINT( "tr %d %d", train_number, train_speed );
 // 	    POS( MENU_INPUT_ROW, MENU_INPUT_COL );
-// 	    termprintf( COM1, "%c", 97 );
 // 	}
 // 	else
 // 	if( buffer[0] == 'r' && buffer[1] == 'v' ) {
@@ -66,7 +65,6 @@ static void menuHistory3( buffer_t *b1, buffer_t *b2, buffer_t *b3 ) {
 // 	    CLLINE;
 // 	    PRINT( "rv %d", train_number );
 // 	    POS( MENU_INPUT_ROW, MENU_INPUT_COL );
-// 	    termprintf( COM1, "S50" );
 // 	}
 // 	else
 // 	if( buffer[0] == 's' && buffer[1] == 'w' ) {
@@ -78,7 +76,6 @@ static void menuHistory3( buffer_t *b1, buffer_t *b2, buffer_t *b3 ) {
 // 	    CLLINE;
 // 	    PRINT( "sw %d %c", switch_number, switch_direction );
 // 	    POS( MENU_INPUT_ROW, MENU_INPUT_COL );
-// 	    termprintf( COM1, "%c", 96 );
 // 	}
 // 	POS( MENU_INPUT_ROW, MENU_INPUT_COL ); /* Park the cursor */
 // }
@@ -122,7 +119,6 @@ void menuInput( buffer_t *b1, buffer_t *b2, buffer_t *b3 ) {
 	    POS( MENU_INPUT_ROW - 1, MENU_INPUT_COL );
 	    CLLINE;
 	    PRINT( "[CMD] tr %d %d", train_number, train_speed );
-		termprintf( COM1, "%c", 97 );
 	}
 	else
 	if( b1->elements[0] == 'r' && b1->elements[1] == 'v'
@@ -135,7 +131,6 @@ void menuInput( buffer_t *b1, buffer_t *b2, buffer_t *b3 ) {
 	    POS( MENU_INPUT_ROW - 1, MENU_INPUT_COL );
 	    CLLINE;
 	    PRINT( "[CMD] rv %d", train_number );
-	    termprintf( COM1, "S50" );
 	}
 	else
 	if( b1->elements[0] == 's' && b1->elements[1] == 'w'
@@ -151,7 +146,6 @@ void menuInput( buffer_t *b1, buffer_t *b2, buffer_t *b3 ) {
 	    POS( MENU_INPUT_ROW - 1, MENU_INPUT_COL );
 	    CLLINE;
 	    PRINT( "[CMD] sw %d %c", switch_number, switch_direction );
-	    termprintf( COM1, "%c", 96 );
 	}
 	else {
 		CLLINE;
