@@ -35,6 +35,7 @@ static inline void BufferBackspace( buffer_t *b ) {
 }
 
 static inline void BufferCopy( buffer_t *src, buffer_t *dst ) {
+    BufferEmpty( dst );
     dst->count = src->count;
     memcpy( dst->elements, src->elements, BUFFERSIZE );
 }

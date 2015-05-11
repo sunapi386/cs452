@@ -204,7 +204,7 @@ void termputw( int channel, int n, char fc, char *bf ) {
 	while( ( ch = *bf++ ) ) termputc( channel, ch );
 }
 
-int termgetc( int channel, char *ch ) { /* This still does busy-waiting! */
+int termgetc( int channel, char *ch ) {
 	int *flags, *data;
 	int ret = 0;
 	if( rcvcountCOM1 < BUFSIZ ) {

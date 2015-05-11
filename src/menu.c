@@ -99,8 +99,9 @@ int a2i( char *b ) {
 
 void menuInput( buffer_t *b1, buffer_t *b2, buffer_t *b3 ) {
 	menuHistory3( b1, b2, b3 );
-	int i1, i2, i3;
-	i1 = a2i( b1->elements ); i2 = a2i( b2->elements ); i3 = a2i( b3->elements );
+	int i2, i3;
+	i2 = a2i( b2->elements );
+	i3 = a2i( b3->elements );
 	/*
 	trainsSet( unsigned int train_num, unsigned int train_speed );
 	trainsReverse( unsigned int train_num );
