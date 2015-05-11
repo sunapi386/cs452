@@ -67,7 +67,7 @@ int termcheckandsend() {
     int *flags, *data;
     int ret = 0;
     /* Experimental flow control of > 900, because ~1500 loops per second */
-    if( countCOM1 > 0 && com1_last_sent_time > 900 ) {
+    if( countCOM1 > 0 && com1_last_sent_time > 300 ) {
         flags = (int *)( UART1_BASE + UART_FLAG_OFFSET );
         if( ! ( *flags & TXFF_MASK ) && (*flags & CTS_MASK) && ! (*flags & TXBUSY_MASK) ) {
 	        data = (int *)( UART1_BASE + UART_DATA_OFFSET );
@@ -79,7 +79,7 @@ int termcheckandsend() {
 	        ret = 1;
         }
     }
-    if( countCOM2 > 0 && com2_last_sent_time > 10 ) {
+    if( countCOM2 > 0 && com2_last_sent_time > 1 ) {
         flags = (int *)( UART2_BASE + UART_FLAG_OFFSET );
         if( ! ( *flags & TXFF_MASK ) ) {
 	        data = (int *)( UART2_BASE + UART_DATA_OFFSET );

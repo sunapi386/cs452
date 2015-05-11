@@ -19,7 +19,6 @@ int main( int argc, char* argv[] ) {
     termsetfifo( COM2, OFF );
     menuDraw();
     trainsInit();
-    trainsSwitchInit();
 
     buffer_t buffer0, buffer1, buffer2, buffer3; /* buffer 0 used for entry, 1 2 3 for cmds */
     BufferEmpty(&buffer0);
@@ -31,8 +30,8 @@ int main( int argc, char* argv[] ) {
 
     for( ;; ) {
         doClock();
-        trainsSensorPoll();
-        trainsDrawSwitches();
+        trainsPollSwitches();
+        trainsPollSensor();
 
         termcheckandsend();
         if( (c = termgetc(COM2)) ) { /* If there is input */
