@@ -17,7 +17,7 @@
 
     /* Switching */
 #define TRAIN_NUM_SWITCHES   0x9d
-#define TRAIN_NUM_SENSORS 5 // Modules A, B, C, D, E
+#define TRAIN_NUM_SENSORS 12 // Modules A, B, C, D, E
 #define TRAIN_SOLENOID_OFF TRAIN_SEND( "%c", 32 )
 /* If a number of turnouts are called in sequence, then each command will automatically
 * turn off the turnout called previously, which means that only the last one needs to be turned off.
@@ -25,10 +25,10 @@
 #define TRAIN_SWITCH_STRAIGHT 33
 #define TRAIN_SWITCH_CURVED 34
 #define TRAIN_SWITCH_STATUS_COL 2
-#define TRAIN_SWITCH_STATUS_ROW 16
+#define TRAIN_SWITCH_STATUS_ROW 20
 
 #define TRAIN_SENSOR_STATUS_COL 30
-#define TRAIN_SENSOR_STATUS_ROW 16
+#define TRAIN_SENSOR_STATUS_ROW 20
 
 void trainsInit();
 void trainsQuit();

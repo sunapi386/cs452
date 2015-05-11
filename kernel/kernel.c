@@ -31,7 +31,7 @@ int main( int argc, char* argv[] ) {
     for( ;; ) {
         doClock();
         trainsPollSwitches();
-        trainsPollSensor();
+        // trainsPollSensor();
 
         termcheckandsend();
         if( (c = termgetc(COM2)) ) { /* If there is input */

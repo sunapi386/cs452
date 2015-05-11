@@ -2,12 +2,15 @@
 #include <termio.h>
 #include <bool.h>
 char switches[TRAIN_NUM_SWITCHES] = {'\0'};
-short sensors[TRAIN_NUM_SENSORS] = {'\0'};
+char sensors[TRAIN_NUM_SENSORS] = {'\0'};
 unsigned current_sensor_idx = 0, sensor_poll_time = 0;
 bool polling = false, switch_changed = true;
 
 static inline void trainsSwitchInit() { /* Hardcoded */
     unsigned int i;
+    for( i = 0; i < TRAIN_NUM_SWITCHES; ++i ) {
+        switches[i] = '\0';
+    }
     for( i = 0; i < 19; ++i ) {
         trainsSwitch( i, 'S' );
         trainsSwitch( i, 'C' );
@@ -27,17 +30,21 @@ static inline void trainsSwitchInit() { /* Hardcoded */
     TRAIN_SOLENOID_OFF;
 }
 
-void trainsInit() {
-    current_sensor_idx = 0;
-    sensor_poll_time = 0;
-    TRAIN_SEND( "%c", TRAIN_GO );
-    int i;
-    for( i = 0; i < TRAIN_NUM_SWITCHES; ++i ) {
-        switches[i] = '\0';
-    }
+static inline void trainsSensorInit() {
+    unsigned int i;
     for( i = 0; i < TRAIN_NUM_SENSORS; ++i ) {
         sensors[i] = 0;
     }
+}
+
+void trainsInit() {
+    current_sensor_idx = 0;
+    sensor_poll_time = 0;
+    polling = false;
+    TRAIN_SEND( "%c", TRAIN_GO );
+    trainsSwitchInit();
+    trainsSensorInit();
+
     SAVECURSOR;
     POS( TRAIN_SWITCH_STATUS_ROW - 2, TRAIN_SWITCH_STATUS_COL );
     PRINT( ".....SWITCHES....." );
@@ -47,7 +54,6 @@ void trainsInit() {
     POS( TRAIN_SENSOR_STATUS_ROW - 1, TRAIN_SENSOR_STATUS_COL );
     LOADCURSOR;
     TRAIN_SEND( "%c", 192 ); /* Clear sensor memory */
-    trainsSwitchInit();
 }
 
 void trainsQuit() {
@@ -101,15 +107,39 @@ static inline bool charbitAt( char c, int idx ) {
 static inline void drawSensors() {
     int group_id, sensor_id;
     POS( TRAIN_SENSOR_STATUS_ROW, TRAIN_SENSOR_STATUS_COL );
-    for( group_id = 0; group_id < 5; group_id++ ) {  /* Groups A, B, C, D, E */
+    for( group_id = 0; group_id < TRAIN_NUM_SENSORS; group_id++ ) {  /* Groups A, B, C, D, E */
         // for( sensor_id = 0; sensor_id < 16; sensor_id++ ) { /* 16 sensors per group */
             // bool status = charbitAt( sensors[group_id], sensor_id );
             // PRINT( "[%c%d %d]", (char)('A' + group_id), sensor_id, (int)status );
         // }
-        PRINT( "%c,0x%hd ", (char)('A' + group_id), sensors[group_id] );
+        PRINT( "%c,%c ", (char)('A' + group_id), sensors[group_id] );
     }
 
 }
+
+void trainsPollSensor() { // Polls until 10 bytes are available and then restarts
+    sensor_poll_time++;
+    if( sensor_poll_time > 8000 ) {
+        drawSensors();
+    }
+
+    if( ! polling ) {
+        TRAIN_SEND( "%c", 128 + 5 ); // request all sensors
+        polling = true;
+    }
+    else {
+        char c = TRAIN_GETC;
+        sensors[current_sensor_idx] = c;
+        current_sensor_idx++;
+        if( current_sensor_idx == 10 ) {
+            current_sensor_idx = 0;
+            polling = false;
+
+        }
+            // current_sensor_idx = (current_sensor_idx + 1) % TRAIN_NUM_SENSORS;
+    }
+}
+
 
 static inline void drawSwitches() {
     SAVECURSOR;
@@ -134,27 +164,6 @@ static inline void drawSwitches() {
     PRINT( "%d %c", 0x9c, switches[0x9c] );
     LOADCURSOR;
 }
-
-
-void trainsPollSensor() { // Polls until 10 bytes are available and then restarts
-    sensor_poll_time++;
-    if( ! polling && sensor_poll_time < 100 ) {
-        TRAIN_SEND( "%c", 192 + current_sensor_idx ); // request a sensor
-        polling = true;
-    }
-    else if( sensor_poll_time > 100 ) {
-        short c = TRAIN_GETC;
-        if( c != 0 ) { // A valid poll, then add result
-            sensors[current_sensor_idx] = c;
-            current_sensor_idx = (current_sensor_idx + 1) % TRAIN_NUM_SENSORS;
-        }
-        /* Display the poll data */
-        polling = false;
-        drawSensors();
-        sensor_poll_time = 0;
-    }
-}
-
 
 void trainsPollSwitches() {
     if(switch_changed) { /* Only redraw when there is a change */
