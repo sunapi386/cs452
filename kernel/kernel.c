@@ -11,22 +11,14 @@
 // }
 
 int main( int argc, char* argv[] ) {
+    terminit();
+    initClock();
+
     termsetspeed( COM1, 2400 );
     termsetfifo( COM1, OFF );
-    terminit();
-    /* COM1
-        Baud rate = 2400
-        Start bits (if requested by computer) = 1
-        Stop bits = 2
-        Parity = None
-        Word size = 8 bits
-    */
-
-    /* COM2 */
     termsetfifo( COM2, OFF );
-    initClock();
     menuDraw();
-    trainsInit();
+    // trainsInit();
 
     buffer_t buffer0, buffer1, buffer2, buffer3; /* buffer 0 used for entry, 1 2 3 for cmds */
     BufferEmpty(&buffer0);
@@ -38,7 +30,7 @@ int main( int argc, char* argv[] ) {
 
     for( ;; ) {
         doClock();
-        trainsSensorPoll();
+        // trainsSensorPoll();
 
         termcheckandsend();
         if( (c = termgetc(COM2)) ) { /* If there is input */
@@ -72,8 +64,8 @@ int main( int argc, char* argv[] ) {
             // trainsSensorPoll();
         // }
     }
-    trainsQuit();
-    CLS;
+    // trainsQuit();
+    // termcheckandsend();
     termflush(); /* Do not print anything after this! */
     return 0;
 }
