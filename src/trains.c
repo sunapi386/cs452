@@ -57,6 +57,11 @@ void trainsInit() {
 
 void trainsQuit() {
     TRAIN_SEND( "%c", TRAIN_STOP );
+    unsigned int i;
+    for( i = 0; i < TRAIN_NUM_SWITCHES; ++i ) {
+        switches[i] = '\0';
+    }
+    trainsSensorInit();
 }
 
 void trainsSet( unsigned int train_num, unsigned int train_speed ) {

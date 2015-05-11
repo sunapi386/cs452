@@ -40,7 +40,7 @@ static void menuHistory3( buffer_t *b1, buffer_t *b2, buffer_t *b3 ) {
 	CLLINE;
 	POS( MENU_INPUT_ROW - 1, 0 );
 	CLLINE;
-	PRINT( "[%s:%s:%s]", b1->elements, b2->elements, b3->elements ); /* %80s prevent buffer overflow */
+	PRINT( "[%20s:%20s:%20s]", b1->elements, b2->elements, b3->elements ); /* %80s prevent buffer overflow */
 }
 
 // void menuParse( char *buffer, char c ) {
@@ -100,8 +100,8 @@ int a2i( char *b ) {
 void menuInput( buffer_t *b1, buffer_t *b2, buffer_t *b3 ) {
 	menuHistory3( b1, b2, b3 );
 	int i2, i3;
-	i2 = a2i( b2->elements );
-	i3 = a2i( b3->elements );
+	i2 = b2->count == 0 ? 0 : a2i( b2->elements );
+	i3 = b3->count == 0 ? 0 : a2i( b3->elements );
 	/*
 	trainsSet( unsigned int train_num, unsigned int train_speed );
 	trainsReverse( unsigned int train_num );

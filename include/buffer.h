@@ -1,7 +1,7 @@
 #define BUFFERSIZE 64
 typedef struct Buffer {
     int count;
-    char elements[BUFFERSIZE]; /* slightly larger buffer */
+    char elements[BUFFERSIZE + 1]; /* slightly larger buffer */
 } buffer_t;
 
 
@@ -17,14 +17,14 @@ static inline int BufferInsert( buffer_t *b, char c ) {
         return -1;
     }
     b->elements[b->count] = c;
-    b->count++;
+    b->count += 1;
     return 0;
 }
 
 static inline void BufferEmpty( buffer_t *b ) {
     int i;
     b->count = 0;
-    for(i = 0; i < BUFFERSIZE; i++ ) {
+    for(i = 0; i < BUFFERSIZE + 1; i++ ) {
         b->elements[i] = '\0';
     }
 }
