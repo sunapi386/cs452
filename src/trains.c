@@ -1,11 +1,14 @@
 #include <trains.h>
 #include <termio.h>
+#include <bool.h>
 char switchStates[TRAIN_BUFFER_SIZE] = {'*'};
 char sensorbuf[TRAIN_SENSOR_BUFSIZ + 1] = {'*'}; // Hardcoded 10 bytes
-unsigned sensorcount = 0;
+unsigned sensorcount = 0, last_poll_time = 0;
+bool pollbusy = false;
 
 void trainsInit() {
     sensorcount = 0;
+    last_poll_time = 0;
     TRAIN_SEND( "%c", TRAIN_GO );
     int i;
     for( i = 0; i < TRAIN_BUFFER_SIZE; ++i ) {
@@ -58,8 +61,9 @@ void trainsSwitch( unsigned int switch_num, char switch_direction ) {
 *  The program needs to receive this data.
 */
 void trainsSensorPoll() { // Polls until 10 bytes are available and then restarts
-    if( sensorcount == TRAIN_SENSOR_BUFSIZ + 1 ) { /* Reinitialize */
+    if( ! pollbusy && sensorcount == TRAIN_SENSOR_BUFSIZ + 1 ) {
         int i;
+        /* Reinitialize */
         for( i = 0; i < TRAIN_SENSOR_BUFSIZ; ++i ) {
             PRINT( "c%c", sensorbuf[i] );
         }
@@ -67,13 +71,27 @@ void trainsSensorPoll() { // Polls until 10 bytes are available and then restart
             sensorbuf[i] = '\0';
         }
         TRAIN_SEND( "%c", 128 + 5 ); // Hardcoded
+        pollbusy = true;
+        last_poll_time = 0;
     }
-    char c = TRAIN_GETC;
-    if( c != 0 ) { // A valid poll, then add result
-        sensorbuf[sensorcount] = c;
-        sensorcount += 1;
-        PRINT( "g%c", c );
+    else if( pollbusy && last_poll_time > 5000 ) {
+        char c = TRAIN_GETC; // this is probably too soon for the train to respond to
+        if( c != 0 ) { // A valid poll, then add result
+            // sensorbuf[sensorcount] = c;
+            // sensorcount += 1;
+            // PRINT( "g%c", c );
+            pollbusy = false;
+            last_poll_time = 0;
+        }
     }
+
+    /* Display the poll data */
+    // SAVECURSOR;
+    // POS( TRAIN_SENSOR_STATUS_ROW, TRAIN_SENSOR_STATUS_COL );
+    // PRINT( "switchStates: [%c]", switchStates );
+    // POS( TRAIN_SENSOR_STATUS_ROW + 1, TRAIN_SENSOR_STATUS_COL );
+    // PRINT( "sensorbuf: [%c]", sensorbuf );
+    // LOADCURSOR;
 }
 
 void trainsSwitchInit() { /* Hardcoded */

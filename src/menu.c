@@ -99,19 +99,20 @@ int a2i( char *b ) {
 	}
 	return num;
 }
-/*
-void trainsSet( unsigned int train_num, unsigned int train_speed );
-void trainsReverse( unsigned int train_num );
-void trainsSwitch( unsigned int switch_num, char switch_direction );
-void trainsSwitchInit();
 
-*/
 void menuInput( buffer_t *b1, buffer_t *b2, buffer_t *b3 ) {
 	menuHistory3( b1, b2, b3 );
 	int i1, i2, i3;
 	i1 = a2i( b1->elements ); i2 = a2i( b2->elements ); i3 = a2i( b3->elements );
-
-	if( b1->elements[0] == 't' && b1->elements[1] == 'r' ) {
+	/*
+	trainsSet( unsigned int train_num, unsigned int train_speed );
+	trainsReverse( unsigned int train_num );
+	trainsSwitch( unsigned int switch_num, char switch_direction );
+	trainsSwitchInit();
+	*/
+	if( b1->elements[0] == 't' && b1->elements[1] == 'r'
+			&& (i2 > 0 && i2 < 99)
+			&& (i3 >= 0 && i3 < 15) ) { // validate input
 		int train_number, train_speed;
 		train_number = i2;
 		train_speed = i3;
@@ -121,11 +122,11 @@ void menuInput( buffer_t *b1, buffer_t *b2, buffer_t *b3 ) {
 	    POS( MENU_INPUT_ROW - 1, MENU_INPUT_COL );
 	    CLLINE;
 	    PRINT( "[CMD] tr %d %d", train_number, train_speed );
-	    POS( MENU_INPUT_ROW, MENU_INPUT_COL );
 		termprintf( COM1, "%c", 97 );
 	}
 	else
-	if( b1->elements[0] == 'r' && b1->elements[1] == 'v' ) {
+	if( b1->elements[0] == 'r' && b1->elements[1] == 'v'
+			&& (i2 > 0 && i2 < 99) ) {
 		int train_number;
 		train_number = i2;
 		trainsReverse( train_number );
@@ -134,11 +135,12 @@ void menuInput( buffer_t *b1, buffer_t *b2, buffer_t *b3 ) {
 	    POS( MENU_INPUT_ROW - 1, MENU_INPUT_COL );
 	    CLLINE;
 	    PRINT( "[CMD] rv %d", train_number );
-	    POS( MENU_INPUT_ROW, MENU_INPUT_COL );
 	    termprintf( COM1, "S50" );
 	}
 	else
-	if( b1->elements[0] == 's' && b1->elements[1] == 'w' ) {
+	if( b1->elements[0] == 's' && b1->elements[1] == 'w'
+			&& (i2 > 0 && i2 < 99)
+			&& (b3->elements[0] == 'c' || b3->elements[0] == 'C' || b3->elements[0] == 's' || b3->elements[0] == 'S' ) ) {
 		int switch_number;
 		char switch_direction;
 		switch_number = i2;
@@ -149,8 +151,13 @@ void menuInput( buffer_t *b1, buffer_t *b2, buffer_t *b3 ) {
 	    POS( MENU_INPUT_ROW - 1, MENU_INPUT_COL );
 	    CLLINE;
 	    PRINT( "[CMD] sw %d %c", switch_number, switch_direction );
-	    POS( MENU_INPUT_ROW, MENU_INPUT_COL );
 	    termprintf( COM1, "%c", 96 );
+	}
+	else {
+		CLLINE;
+	    POS( MENU_INPUT_ROW - 1, MENU_INPUT_COL );
+	    CLLINE;
+	PRINT( "Unknown command");
 	}
 	POS( MENU_INPUT_ROW, MENU_INPUT_COL ); /* Park the cursor */
 }

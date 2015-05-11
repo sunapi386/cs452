@@ -26,7 +26,7 @@ unsigned int frontCOM1 = 0, backCOM1 = 0, countCOM1 = 0;
 unsigned int frontCOM2 = 0, backCOM2 = 0, countCOM2 = 0;
 unsigned int rcvfrontCOM1 = 0, rcvbackCOM1 = 0, rcvcountCOM1 = 0;
 unsigned int rcvfrontCOM2 = 0, rcvbackCOM2 = 0, rcvcountCOM2 = 0;
-unsigned int com1_last_sent_time = 0; /* Add delay between commands that need to be sent */
+unsigned int com1_last_sent_time = 0, com2_last_sent_time = 0; /* Add delay between commands that need to be sent */
 
 void terminit() { /* Necessary. Depending on compiler is unreliable shit! */
 	int i;
@@ -37,26 +37,36 @@ void terminit() { /* Necessary. Depending on compiler is unreliable shit! */
 	frontCOM2 = backCOM2 = countCOM2 = 0;
 	rcvfrontCOM1 = rcvbackCOM1 = rcvcountCOM1 = 0;
 	rcvfrontCOM2 = rcvbackCOM2 = rcvcountCOM2 = 0;
-	com1_last_sent_time = 0; // first I want to time how fast this goes for, per second.
+	com1_last_sent_time = com2_last_sent_time = 0; // first I want to time how fast this goes for, per second.
 }
 
 void termflush() {
-	SAVECURSOR;
+	// SAVECURSOR;
 	POS( STATUS_X, STATUS_Y );
 	CLLINE;
 	PRINT( "Goodbye!" );
 	// LOADCURSOR;
-	while( termcheckandsend() ); /* Don't print anything after while loop */
+	int max;
+	max = 20000;
+	while( termcheckandsend() ) {
+		max--;
+		if( max == 0 ) { break; }
+	}
+	/* Don't print anything after while loop */
 }
 
 /* Checks if there are data to send and ready, returns number sent */
+/* The train controller asserts RTS, which is read as CTS by the UART.
+   The train controller ignores the RS-232 input if you send when CTS is not asserted.
+*/
 int termcheckandsend() {
-	com1_last_sent_time++;
+	com1_last_sent_time++; /* Crude way of keeping track of time */
+	com2_last_sent_time++;
     // if( count != 0 && ( *flags & TXFE_MASK ) && ( *flags & RXFE_MASK) ) {
     int *flags, *data;
     int ret = 0;
-    /* Experimental flow control of > 5000 */
-    if( countCOM1 > 0 && com1_last_sent_time > 5000 ) {
+    /* Experimental flow control of > 900, because ~1500 loops per second */
+    if( countCOM1 > 0 && com1_last_sent_time > 500 ) {
         flags = (int *)( UART1_BASE + UART_FLAG_OFFSET );
         if( ! ( *flags & TXFF_MASK ) && (*flags & CTS_MASK) && ! (*flags & TXBUSY_MASK) ) {
 	        data = (int *)( UART1_BASE + UART_DATA_OFFSET );
@@ -65,18 +75,19 @@ int termcheckandsend() {
             countCOM1 -= 1;
             termprintf( COM2, "com1_last_sent_time: %u", com1_last_sent_time );
             com1_last_sent_time = 0;
+	        ret = 1;
         }
-        ret = 1;
     }
-    if( countCOM2 > 0 ) {
+    if( countCOM2 > 0 && com2_last_sent_time > 5 ) {
         flags = (int *)( UART2_BASE + UART_FLAG_OFFSET );
         if( ! ( *flags & TXFF_MASK ) ) {
 	        data = (int *)( UART2_BASE + UART_DATA_OFFSET );
             *data = (char)(bufferCOM2[frontCOM2]);
             frontCOM2 = (frontCOM2 + 1) % BUFSIZ;
             countCOM2 -= 1;
+            com2_last_sent_time = 0;
+	        ret = 2;
         }
-        ret = 2;
     }
     return ret;
 }

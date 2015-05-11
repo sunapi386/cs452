@@ -26,6 +26,8 @@
 #define TRAIN_SWITCH_CURVED 34
 /* Switching take a two byte command, directions and address. Addresses are 1-256.
 */
+#define TRAIN_SENSOR_STATUS_COL 5
+#define TRAIN_SENSOR_STATUS_ROW 50
 
 void trainsInit();
 void trainsQuit();

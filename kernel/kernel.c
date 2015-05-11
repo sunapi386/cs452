@@ -12,6 +12,7 @@
 
 int main( int argc, char* argv[] ) {
     termsetspeed( COM1, 2400 );
+    termsetfifo( COM1, OFF );
     terminit();
     /* COM1
         Baud rate = 2400
@@ -26,7 +27,6 @@ int main( int argc, char* argv[] ) {
     initClock();
     menuDraw();
     trainsInit();
-    termsetfifo( COM1, OFF );
 
     buffer_t buffer0, buffer1, buffer2, buffer3; /* buffer 0 used for entry, 1 2 3 for cmds */
     BufferEmpty(&buffer0);
@@ -35,10 +35,10 @@ int main( int argc, char* argv[] ) {
     BufferEmpty(&buffer3);
     int spaces = 0;  /* Track number of spaces pressed */
     int c;
-    trainsSensorPoll();
 
     for( ;; ) {
         doClock();
+        trainsSensorPoll();
 
         termcheckandsend();
         if( (c = termgetc(COM2)) ) { /* If there is input */
