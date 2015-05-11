@@ -23,10 +23,10 @@ static inline int BufferInsert( buffer_t *b, char c ) {
 
 static inline void BufferEmpty( buffer_t *b ) {
     int i;
-    for(i = 0; i < b->count; i++ ) {
+    b->count = 0;
+    for(i = 0; i < BUFFERSIZE; i++ ) {
         b->elements[i] = '\0';
     }
-    b->count = 0;
 }
 
 static inline void BufferBackspace( buffer_t *b ) {
