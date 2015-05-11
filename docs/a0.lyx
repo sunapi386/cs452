@@ -120,8 +120,18 @@ To build it from source, go to cs452/kernel folder and run the makefile:
 \end_layout
 
 \begin_layout Verbatim
+
 j53sun@ubuntu1204-004:~/cs452/kernel$ clear ; make libs && make clean &&
  make
+\end_layout
+
+\begin_layout Standard
+This automatically builds and copies it to my directory
+\end_layout
+
+\begin_layout Verbatim
+
+/u/cs452/tftp/ARM/j53sun/kernel.elf
 \end_layout
 
 \begin_layout Section
@@ -145,6 +155,7 @@ Polls the train sensors for changes (incomplete functionality).
  Sends a new sensor data request when all data bytes from previous sensor
  data request have been received.
  The data is then put into a buffer, which is allocated on the stack.
+ I have gotten sensor readings, but this breaks the sending of other commands.
 \end_layout
 
 \begin_layout Itemize
@@ -201,8 +212,151 @@ Source code location and md5 hashes
 \end_layout
 
 \begin_layout Standard
-..
- to be done.
+The root directory is 
+\end_layout
+
+\begin_layout Verbatim
+
+/u1/j53sun/cs452 
+\end_layout
+
+\begin_layout Standard
+And md5 hashes
+\end_layout
+
+\begin_layout Verbatim
+
+55a8e491be14b5a6c2ab2c4e18dff3aa  kernel/kernel.a 
+\end_layout
+
+\begin_layout Verbatim
+
+cde2e8ae7f7fd8be78167195ccab647a  kernel/kernel.c 
+\end_layout
+
+\begin_layout Verbatim
+
+dd49706f2421250533861efb4b571884  kernel/kernel.h 
+\end_layout
+
+\begin_layout Verbatim
+
+6898c4e700229324a782fb52577107c0  kernel/Makefile 
+\end_layout
+
+\begin_layout Verbatim
+
+8f13fb8bede40fa7fa47de95f5bf4d8d  kernel/menu.c 
+\end_layout
+
+\begin_layout Verbatim
+
+3920e98f9f3fd8d0acf74d6de6be1530  kernel/mysteps.txt 
+\end_layout
+
+\begin_layout Verbatim
+
+9334189d105271131c9ba7b08a4215af  kernel/orex.ld 
+\end_layout
+
+\begin_layout Verbatim
+
+d1bf2d35ebbb3eaf222de8edec6dc22e  kernel/timer.c
+\end_layout
+
+\begin_layout Verbatim
+
+dba36a6a6d4aa0e4df9f55293e49476e  include/bool.h 
+\end_layout
+
+\begin_layout Verbatim
+
+791a92535ef5baa9546ddc3de017db34  include/buffer.h 
+\end_layout
+
+\begin_layout Verbatim
+
+d32dda3f6cd59b210c03d1ed8332c581  include/bwio.h 
+\end_layout
+
+\begin_layout Verbatim
+
+c343907f259c821eb6f910d32ca325cd  include/circ_buffer.h 
+\end_layout
+
+\begin_layout Verbatim
+
+87e9fe1c0b91c71156b20cb17d045b2d  include/menu.h 
+\end_layout
+
+\begin_layout Verbatim
+
+3a55d4201635b4972cd319a4bbd5d6a9  include/screen.h 
+\end_layout
+
+\begin_layout Verbatim
+
+2f9e34c2a1e730561ce059cf3694d690  include/termio.h 
+\end_layout
+
+\begin_layout Verbatim
+
+c4b75907720d8d0c206f853a6b234f68  include/timer.h 
+\end_layout
+
+\begin_layout Verbatim
+
+6a6bbef2cca529750f7084c90f1769f2  include/trains.h 
+\end_layout
+
+\begin_layout Verbatim
+
+d5ae7a7af25c09b1ada872424e22c766  include/ts7200.h
+\end_layout
+
+\begin_layout Verbatim
+
+6abec0cf31b762a695b5c23a223bbdcb  src/buffer.c 
+\end_layout
+
+\begin_layout Verbatim
+
+88b4539f5cd0de2a8b055e30c06c7465  src/bwio.c 
+\end_layout
+
+\begin_layout Verbatim
+
+53daf42ef0d841cf245afd53cfd405cd  src/commio.c 
+\end_layout
+
+\begin_layout Verbatim
+
+e17ae063330185a3a0a51a66b0cf11da  src/Makefile 
+\end_layout
+
+\begin_layout Verbatim
+
+de032abed4c3344dd8b3ec0f73bd1d20  src/menu.c 
+\end_layout
+
+\begin_layout Verbatim
+
+a64100478c8fc0396e5073997cf7a31c  src/screen.c 
+\end_layout
+
+\begin_layout Verbatim
+
+d3b035d2812ec7262eb731bfc93708d7  src/termio.c 
+\end_layout
+
+\begin_layout Verbatim
+
+80f9969727b6b4133a1348fe47d74a9f  src/timer.c 
+\end_layout
+
+\begin_layout Verbatim
+
+d9857544f07c77e962093a557b60c0c9  src/trains.c
 \end_layout
 
 \begin_layout Section
@@ -210,8 +364,7 @@ List of all files submitted
 \end_layout
 
 \begin_layout Standard
-...
- To be done.
+All the files in 3, plus this design document (pdf).
 \end_layout
 
 \begin_layout Section
@@ -233,7 +386,10 @@ Hardware to reply to a sensor query
 \end_layout
 
 \begin_layout Standard
-To be documented.
+Hardware replies to sensor query is broken.
+ I can read the sensor data, but that breaks my sending output and I think
+ I'd rather submit without the bug that makes my program unable to control
+ the trains.
 \end_layout
 
 \end_body
