@@ -17,7 +17,7 @@
 #define TRAIN_REVERSE   15
 
     /* Switching */
-#define TRAIN_BUFFER_SIZE   64
+#define TRAIN_NUM_SWITCHES   0x9d
 #define TRAIN_SOLENOID_OFF TRAIN_SEND( "%c", 32 )
 /* If a number of turnouts are called in sequence, then each command will automatically
 * turn off the turnout called previously, which means that only the last one needs to be turned off.
@@ -26,8 +26,8 @@
 #define TRAIN_SWITCH_CURVED 34
 /* Switching take a two byte command, directions and address. Addresses are 1-256.
 */
-#define TRAIN_SENSOR_STATUS_COL 5
-#define TRAIN_SENSOR_STATUS_ROW 50
+#define TRAIN_SENSOR_STATUS_COL 2
+#define TRAIN_SENSOR_STATUS_ROW 16
 
 void trainsInit();
 void trainsQuit();
@@ -36,5 +36,6 @@ void trainsSet( unsigned int train_num, unsigned int train_speed );
 void trainsReverse( unsigned int train_num );
 void trainsSwitch( unsigned int switch_num, char switch_direction );
 void trainsSwitchInit();
+void trainsDrawSwitches();
 
 #endif // __TRAINS_H

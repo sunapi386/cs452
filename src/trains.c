@@ -1,22 +1,27 @@
 #include <trains.h>
 #include <termio.h>
 #include <bool.h>
-char switchStates[TRAIN_BUFFER_SIZE] = {'*'};
+char switches[TRAIN_NUM_SWITCHES] = {'*'};
 char sensorbuf[TRAIN_SENSOR_BUFSIZ + 1] = {'*'}; // Hardcoded 10 bytes
 unsigned sensorcount = 0, last_poll_time = 0;
-bool pollbusy = false;
+bool pollbusy = false, switch_changed = true;
 
 void trainsInit() {
     sensorcount = 0;
     last_poll_time = 0;
     TRAIN_SEND( "%c", TRAIN_GO );
     int i;
-    for( i = 0; i < TRAIN_BUFFER_SIZE; ++i ) {
-        switchStates[i] = '.';
+    for( i = 0; i < TRAIN_NUM_SWITCHES; ++i ) {
+        switches[i] = '.';
     }
     for( i = 0; i < TRAIN_SENSOR_BUFSIZ + 1; ++i ) {
         sensorbuf[i] = '.';
     }
+    SAVECURSOR;
+    POS( TRAIN_SENSOR_STATUS_ROW - 2, TRAIN_SENSOR_STATUS_COL );
+    PRINT( ".......SWITCHES......." );
+    POS( TRAIN_SENSOR_STATUS_ROW - 1, TRAIN_SENSOR_STATUS_COL );
+    LOADCURSOR;
 }
 
 void trainsQuit() {
@@ -48,6 +53,8 @@ void trainsSwitch( unsigned int switch_num, char switch_direction ) {
     TRAIN_SEND( "%c%c", direction, switch_num );
     // PRINT( "Switch %u direction %u", switch_num, direction );
     TRAIN_SOLENOID_OFF;
+    switches[switch_num] = switch_direction;
+    switch_changed = true;
 }
 
 /* Each sensor stores 2 bytes. To read sensor they must be told to dump their memory.
@@ -75,7 +82,7 @@ void trainsSensorPoll() { // Polls until 10 bytes are available and then restart
         pollbusy = true;
         last_poll_time = 0;
     }
-    else if( pollbusy && last_poll_time > 5000 ) {
+    else if( pollbusy && last_poll_time > 1500 ) {
         char c = TRAIN_GETC; // this is probably too soon for the train to respond to
         if( c != 0 ) { // A valid poll, then add result
             // sensorbuf[sensorcount] = c;
@@ -89,7 +96,7 @@ void trainsSensorPoll() { // Polls until 10 bytes are available and then restart
     /* Display the poll data */
     // SAVECURSOR;
     // POS( TRAIN_SENSOR_STATUS_ROW, TRAIN_SENSOR_STATUS_COL );
-    // PRINT( "switchStates: [%c]", switchStates );
+    // PRINT( "switches: [%c]", switches );
     // POS( TRAIN_SENSOR_STATUS_ROW + 1, TRAIN_SENSOR_STATUS_COL );
     // PRINT( "sensorbuf: [%c]", sensorbuf );
     // LOADCURSOR;
@@ -99,20 +106,51 @@ void trainsSwitchInit() { /* Hardcoded */
     unsigned int i;
     for( i = 0; i < 19; ++i ) {
         trainsSwitch( i, 'S' );
-    }
-    for( i = 0; i < 19; ++i ) {
         trainsSwitch( i, 'C' );
+        switches[i] = 'C';
     }
-    /* Special handling of middle tracks to avoid CC position */
+    /* Special handling of middle tracks to avoid CC position: x99 x9a x9b x9c */
+    trainsSwitch( 0x99, 'C' );
+    switches[0x99] = 'C';
+    trainsSwitch( 0x9c, 'C' );
+    switches[0x9c] = 'C';
 
-    // TRAIN_SEND( "%c%c", 0x99, dir );
-    // PRINT( "Switch %x dir %c", 0x99, dir );
-    // TRAIN_SEND( "%c%c", 0x9c, dir );
-    // PRINT( "Switch %x dir %c", 0x9c, dir );
-    // dir = 'S';
-    // TRAIN_SEND( "%c%c", 0x9a, dir );
-    // PRINT( "Switch %x dir %c", 0x9a, dir );
-    // TRAIN_SEND( "%c%c", 0x9b, dir );
-    // PRINT( "Switch %x dir %c", 0x9b, dir );
+    trainsSwitch( 0x9a, 'S' );
+    switches[0x9a] = 'S';
+    trainsSwitch( 0x9b, 'S' );
+    switches[0x9b] = 'S';
+
     TRAIN_SOLENOID_OFF;
+}
+
+static inline void drawSwitches() {
+    SAVECURSOR;
+    int i;
+    for(i = 0; i < 10; i++ ) {
+        POS( TRAIN_SENSOR_STATUS_ROW + i, TRAIN_SENSOR_STATUS_COL );
+        PRINT( "[%d %c]", i, switches[i] );
+    }
+
+    for(i = 11; i < 19; i++ ) {
+        POS( TRAIN_SENSOR_STATUS_ROW + i - 11, TRAIN_SENSOR_STATUS_COL + 6 );
+        PRINT( "[%d %c]", i, switches[i] );
+    }
+
+    POS( TRAIN_SENSOR_STATUS_ROW + 0, TRAIN_SENSOR_STATUS_COL + 13 );
+    PRINT( "[%d %c]", 0x99, switches[0x99] );
+    POS( TRAIN_SENSOR_STATUS_ROW + 1, TRAIN_SENSOR_STATUS_COL + 13 );
+    PRINT( "[%d %c]", 0x9a, switches[0x9a] );
+    POS( TRAIN_SENSOR_STATUS_ROW + 2, TRAIN_SENSOR_STATUS_COL + 13 );
+    PRINT( "[%d %c]", 0x9b, switches[0x9b] );
+    POS( TRAIN_SENSOR_STATUS_ROW + 3, TRAIN_SENSOR_STATUS_COL + 13 );
+    PRINT( "[%d %c]", 0x9c, switches[0x9c] );
+    LOADCURSOR;
+}
+
+void trainsDrawSwitches() {
+    if(switch_changed) { /* Only redraw when there is a change */
+        /* Display the poll data */
+        drawSwitches();
+        switch_changed = false;
+    }
 }

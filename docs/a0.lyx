@@ -100,15 +100,28 @@ Valid commands are:
 \end_layout
 
 \begin_layout Verbatim
+
 tr train_number train_speed
 \end_layout
 
 \begin_layout Verbatim
+
 rv train_number
 \end_layout
 
 \begin_layout Verbatim
+
 sw switch_number switch_direction
+\end_layout
+
+\begin_layout Standard
+To build it from source, go to cs452/kernel folder and run the makefile:
+ 
+\end_layout
+
+\begin_layout Verbatim
+j53sun@ubuntu1204-004:~/cs452/kernel$ clear ; make libs && make clean &&
+ make
 \end_layout
 
 \begin_layout Section
@@ -183,34 +196,6 @@ Backspace glitches when space is pressed and the user attempts to backspace
  
 \end_layout
 
-\begin_layout Itemize
-Pressing 'q' terminates program immediately.
-\end_layout
-
-\begin_layout Itemize
-Once program terminates, 
-\begin_inset Quotes eld
-\end_inset
-
-go
-\begin_inset Quotes erd
-\end_inset
-
- command relaunches with significant delay.
- And terminating that causes screen to be filled with bad characters.
- This is probably caused by use of global variables (bad), but time ran
- out for a refactor fix.
-\end_layout
-
-\begin_deeper
-\begin_layout Itemize
-In attempt to fix this, remapped the memory space usage in the orex.ld file
- to move the program start space to 0x00218000, and text data ahead of data
- and bss.
- Does not seem to solve problem.
-\end_layout
-
-\end_deeper
 \begin_layout Section
 Source code location and md5 hashes
 \end_layout
